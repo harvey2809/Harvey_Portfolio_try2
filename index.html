@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hardeep (Harvey) Bhatti — Urban & Environmental Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060a0f;--bg2:#0a0f16;--bg3:#0d1520;--bg4:#111c2b;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e8edf4;--text2:rgba(232,237,244,0.55);--text3:rgba(232,237,244,0.28);
+  --accent:#0ea5e9;--accent2:#38bdf8;
+  --green:#10b981;--amber:#f59e0b;--purple:#8b5cf6;--coral:#f97316;--teal:#14b8a6;
+  --sans:'DM Sans',sans-serif;--serif:'DM Serif Display',serif;--mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(14,165,233,0.3);border-radius:2px}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(14,165,233,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.035) 1px,transparent 1px);background-size:52px 52px;pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:900;padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent;transition:all 0.3s}
+nav.scrolled{background:rgba(6,10,15,0.92);backdrop-filter:blur(16px);border-bottom-color:var(--border)}
+.nav-logo{font-family:var(--serif);font-size:1.2rem;color:var(--text);text-decoration:none}.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:13px;font-weight:500;color:var(--text2);text-decoration:none;letter-spacing:0.04em;text-transform:uppercase;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}
+.nav-cta{font-size:12px;font-weight:500;padding:8px 18px;border-radius:8px;border:1px solid rgba(14,165,233,0.4);color:var(--accent);text-decoration:none;transition:all 0.2s}.nav-cta:hover{background:rgba(14,165,233,0.1)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}.hamburger span{display:block;width:22px;height:1.5px;background:var(--text2)}
+.mobile-menu{display:none;position:fixed;inset:0;z-index:800;background:rgba(6,10,15,0.98);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:2.5rem}.mobile-menu.open{display:flex}
+.mobile-menu a{font-family:var(--serif);font-size:2rem;color:var(--text);text-decoration:none}.mobile-menu a:hover{color:var(--accent)}
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:8rem 2rem 5rem}
+.hero-glow{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(14,165,233,0.07) 0%,transparent 65%);pointer-events:none}
+.hero-glow2{position:absolute;bottom:-10%;right:-5%;width:500px;height:500px;background:radial-gradient(ellipse,rgba(139,92,246,0.05) 0%,transparent 65%);pointer-events:none}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:860px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);font-size:12px;font-weight:500;color:var(--green);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:2rem;animation:fadeUp 0.6s ease both}
+.hero-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
+.hero-name{font-family:var(--serif);font-size:clamp(2.8rem,7vw,5.5rem);line-height:1.05;color:var(--text);margin-bottom:1rem;animation:fadeUp 0.6s 0.1s ease both}
+.hero-name em{color:var(--accent);font-style:normal}
+.hero-title{font-size:clamp(1rem,2.5vw,1.3rem);color:var(--text2);font-weight:300;margin-bottom:2rem;animation:fadeUp 0.6s 0.2s ease both}
+.hero-desc{font-size:1rem;color:var(--text2);max-width:600px;margin:0 auto 2.5rem;line-height:1.75;animation:fadeUp 0.6s 0.3s ease both}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.6s 0.4s ease both}
+.btn-primary{padding:13px 28px;border-radius:10px;background:var(--accent);color:#fff;font-weight:500;font-size:14px;text-decoration:none;transition:all 0.25s;border:none;cursor:pointer;font-family:var(--sans)}.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-ghost{padding:13px 28px;border-radius:10px;background:transparent;color:var(--text2);font-weight:500;font-size:14px;text-decoration:none;transition:all 0.25s;border:1px solid var(--border2)}.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,0.25)}
+.hero-stats{display:flex;gap:3rem;justify-content:center;margin-top:4rem;animation:fadeUp 0.6s 0.5s ease both}
+.stat{text-align:center}.stat-num{font-family:var(--serif);font-size:2.2rem;color:var(--text);line-height:1}.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;margin-top:4px}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text3);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;animation:fadeUp 0.6s 0.8s ease both}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s infinite}
+@keyframes scrollPulse{0%,100%{opacity:0.3}50%{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+section{padding:6rem 2rem}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3rem);color:var(--text);margin-bottom:1rem;line-height:1.15}
+.section-sub{font-size:1rem;color:var(--text2);max-width:560px;line-height:1.7}
+#expertise{background:var(--bg2);position:relative;overflow:hidden}
+.expertise-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin-top:3rem}
+.expertise-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1.75rem;transition:all 0.3s;position:relative;overflow:hidden}
+.expertise-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--card-color,var(--accent));opacity:0;transition:opacity 0.3s}
+.expertise-card:hover{border-color:var(--border2);transform:translateY(-3px)}.expertise-card:hover::before{opacity:1}
+.expertise-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;font-size:20px}
+.expertise-name{font-size:1rem;font-weight:500;color:var(--text);margin-bottom:0.5rem}
+.expertise-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.expertise-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem}
+.tag{font-size:10px;font-weight:500;padding:3px 9px;border-radius:5px;letter-spacing:0.04em}
+#education{background:var(--bg);position:relative}
+.edu-timeline{margin-top:3rem;display:flex;flex-direction:column}
+.edu-item{display:grid;grid-template-columns:160px 1fr;gap:2rem;position:relative;padding-bottom:2.5rem}
+.edu-item:last-child{padding-bottom:0}
+.edu-item::after{content:'';position:absolute;left:159px;top:12px;bottom:0;width:1px;background:var(--border)}.edu-item:last-child::after{display:none}
+.edu-year{font-family:var(--mono);font-size:12px;color:var(--text3);text-align:right;padding-top:2px}
+.edu-dot{position:absolute;left:152px;top:5px;width:15px;height:15px;border-radius:50%;border:2px solid var(--accent);background:var(--bg);z-index:1}.edu-dot.active{background:var(--accent)}
+.edu-body{padding-left:1.5rem}
+.edu-degree{font-family:var(--serif);font-size:1.2rem;color:var(--text);line-height:1.3;margin-bottom:4px}
+.edu-school{font-size:13px;font-weight:500;color:var(--accent);margin-bottom:4px}
+.edu-loc{font-size:12px;color:var(--text3)}
+.edu-detail{font-size:13px;color:var(--text2);margin-top:10px;line-height:1.6}
+#mapping{background:var(--bg2);position:relative;overflow:hidden;padding:6rem 0}
+#projects{background:var(--bg);position:relative;overflow:hidden}
+.mapping-header{text-align:center;padding:0 2rem;margin-bottom:3.5rem}
+.carousel-track{position:relative;height:340px;display:flex;align-items:center;justify-content:center;margin-bottom:2.5rem}
+.proj-carousel-track{position:relative;height:380px;display:flex;align-items:center;justify-content:center;margin-bottom:2.5rem}
+.c-card{position:absolute;width:min(480px,78vw);height:300px;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1),opacity 0.5s ease,filter 0.5s ease;border:1px solid rgba(255,255,255,0.08)}
+.c-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;background:var(--bg3)}.c-card:hover img{transform:scale(1.03)}
+.c-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,8,14,0.92) 0%,rgba(4,8,14,0.3) 55%,transparent 100%)}
+.c-cat{position:absolute;top:14px;left:14px;font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(8,12,16,0.75);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(8px)}
+.c-title{position:absolute;bottom:16px;left:16px;right:16px;font-family:var(--serif);font-size:1.2rem;color:var(--text);line-height:1.25}
+.c-loc{font-family:var(--sans);font-size:11px;color:rgba(232,237,244,0.5);font-weight:400;margin-top:3px}
+.expand-hint{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(14,165,233,0.15);border:1px solid rgba(14,165,233,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s}.c-card:hover .expand-hint{opacity:1}
+.p-card{position:absolute;width:min(520px,80vw);height:340px;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1),opacity 0.5s ease,filter 0.5s ease;border:1px solid rgba(255,255,255,0.08);background:var(--bg3)}
+.p-card-img{width:100%;height:56%;object-fit:cover;display:block;background:var(--bg4)}
+.p-card-body{padding:1.1rem 1.25rem}
+.p-card-cat{font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:5px}
+.p-card-title{font-family:var(--serif);font-size:1.05rem;color:var(--text);line-height:1.25;margin-bottom:4px}
+.p-card-loc{font-size:11px;color:var(--text3)}
+.p-card-hint{font-size:10px;color:var(--accent);margin-top:7px;letter-spacing:0.04em;opacity:0;transition:opacity 0.2s}.p-card:hover .p-card-hint{opacity:1}
+.c-meta{text-align:center;margin-bottom:2.5rem;padding:0 1rem;transition:opacity 0.3s;min-height:80px}
+.c-meta-title{font-family:var(--serif);font-size:1.4rem;color:var(--text);margin-bottom:6px}
+.c-meta-desc{font-size:13px;color:var(--text2);max-width:540px;margin:0 auto 10px;line-height:1.65}
+.c-meta-tools{font-size:11px;color:var(--accent);font-weight:500;letter-spacing:0.04em}
+.c-controls{display:flex;align-items:center;justify-content:center;gap:1.5rem}
+.c-btn{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(232,237,244,0.65);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}.c-btn:hover{border-color:rgba(14,165,233,0.5);background:rgba(14,165,233,0.1);color:var(--accent)}
+.dots{display:flex;gap:6px;align-items:center}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.18);cursor:pointer;transition:all 0.3s;border:none;padding:0}.dot.active{background:var(--accent);width:20px;border-radius:3px}.dot:hover:not(.active){background:rgba(255,255,255,0.4)}
+.c-hint{text-align:center;font-size:11px;color:var(--text3);margin-top:1.5rem}
+
+/* MAP LIGHTBOX */
+.lb-backdrop{position:fixed;inset:0;background:rgba(4,8,14,0.97);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(16px);animation:lbIn 0.25s ease}
+@keyframes lbIn{from{opacity:0}to{opacity:1}}
+.lb-inner{max-width:1100px;width:100%;display:grid;grid-template-columns:1fr 360px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);animation:lbUp 0.3s cubic-bezier(0.4,0,0.2,1);max-height:90vh}
+@keyframes lbUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+.lb-img{position:relative;overflow:hidden;background:#0a1220;min-height:420px;display:flex;align-items:center;justify-content:center}.lb-img img{width:100%;height:100%;object-fit:contain;display:block}
+.lb-panel{background:#0d1520;border-left:1px solid rgba(255,255,255,0.06);padding:2rem;display:flex;flex-direction:column;gap:1.25rem;overflow-y:auto}
+.lb-badge{font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;padding:4px 10px;border-radius:20px;display:inline-block;width:fit-content}
+.lb-title{font-family:var(--serif);font-size:1.6rem;color:var(--text);line-height:1.2}
+.lb-loc{font-size:12px;color:var(--text3);margin-top:-0.75rem}
+.lb-hr{border:none;border-top:1px solid rgba(255,255,255,0.06)}
+.lb-desc{font-size:14px;color:var(--text2);line-height:1.72}
+.lb-tools-label{font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.lb-tools{display:flex;flex-wrap:wrap;gap:6px}
+.lb-tool{font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(14,165,233,0.08);border:1px solid rgba(14,165,233,0.2);color:var(--accent);font-weight:500}
+.lb-nav{display:flex;gap:8px;margin-top:auto;padding-top:1rem}
+.lb-nav-btn{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--text2);cursor:pointer;font-size:12px;font-family:var(--sans);font-weight:500;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}.lb-nav-btn:hover{border-color:rgba(14,165,233,0.4);background:rgba(14,165,233,0.08);color:var(--accent)}
+.lb-close-btn{position:fixed;top:1.5rem;right:1.5rem;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:10}.lb-close-btn:hover{background:rgba(255,255,255,0.12);color:var(--text)}
+
+/* BOOK VIEWER */
+#bookViewer{position:fixed;inset:0;z-index:2000;background:rgba(3,6,10,0.98);backdrop-filter:blur(20px);display:none;flex-direction:column}
+.book-topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);flex-shrink:0;gap:1rem}
+.book-info-title{font-family:var(--serif);font-size:1.1rem;color:var(--text);line-height:1.2}
+.book-info-loc{font-size:11px;color:var(--text3);margin-top:2px}
+.book-topbar-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.book-dl-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;background:var(--accent);color:#fff;font-size:13px;font-weight:500;font-family:var(--sans);border:none;cursor:pointer;text-decoration:none;transition:all 0.2s}.book-dl-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.book-close-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.2s}.book-close-btn:hover{background:rgba(255,255,255,0.14);color:var(--text)}
+.book-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;perspective:2000px;overflow:hidden;position:relative}
+.book-shadow{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);width:min(700px,88vw);height:36px;background:radial-gradient(ellipse,rgba(0,0,0,0.65) 0%,transparent 70%);pointer-events:none;border-radius:50%}
+.open-book{position:relative;width:min(760px,92vw);height:min(520px,66vh);display:flex;transform-style:preserve-3d}
+.book-spine{position:absolute;left:50%;top:0;bottom:0;width:4px;background:linear-gradient(to right,rgba(0,0,0,0.4),rgba(255,255,255,0.08),rgba(0,0,0,0.4));transform:translateX(-50%);z-index:20;box-shadow:0 0 16px rgba(0,0,0,0.6)}
+.book-page{width:50%;height:100%;position:relative;overflow:hidden;background:#f4efe6}
+.book-page-left{border-radius:4px 0 0 4px;box-shadow:-10px 4px 40px rgba(0,0,0,0.6),inset -6px 0 16px rgba(0,0,0,0.12)}
+.book-page-right{border-radius:0 4px 4px 0;box-shadow:10px 4px 40px rgba(0,0,0,0.6),inset 6px 0 16px rgba(0,0,0,0.12)}
+.book-page canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+.page-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f4efe6;flex-direction:column;gap:10px;z-index:2}
+.page-spinner{width:28px;height:28px;border:2px solid rgba(14,165,233,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.page-loading-text{font-size:11px;color:#999;font-family:var(--sans)}
+
+/* FLIP */
+.flip-container{position:absolute;top:0;height:100%;width:50%;transform-style:preserve-3d;z-index:30;pointer-events:none;display:none}
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:#f4efe6}
+.flip-back{transform:rotateY(180deg)}
+.flip-front canvas,.flip-back canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+@keyframes flipFwdRight{from{transform:rotateY(0deg)}to{transform:rotateY(-180deg)}}
+@keyframes flipFwdLeft{from{transform:rotateY(0deg)}to{transform:rotateY(180deg)}}
+.do-flip-right{animation:flipFwdRight 0.65s cubic-bezier(0.4,0,0.2,1) forwards}
+.do-flip-left{animation:flipFwdLeft 0.65s cubic-bezier(0.4,0,0.2,1) forwards}
+
+.book-controls{display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:1.2rem 1rem;border-top:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.book-ctrl-btn{display:flex;align-items:center;gap:8px;padding:9px 20px;border-radius:9px;border:1px solid var(--border2);background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;font-size:13px;font-family:var(--sans);font-weight:500;transition:all 0.2s}.book-ctrl-btn:hover:not(:disabled){border-color:rgba(14,165,233,0.45);background:rgba(14,165,233,0.08);color:var(--accent)}.book-ctrl-btn:disabled{opacity:0.3;cursor:not-allowed}
+.book-page-counter{font-family:var(--mono);font-size:13px;color:var(--text3);min-width:100px;text-align:center}
+.book-progress{width:160px;height:2px;background:rgba(255,255,255,0.08);border-radius:1px;overflow:hidden}
+.book-progress-fill{height:100%;background:var(--accent);border-radius:1px;transition:width 0.4s ease}
+
+/* CONTACT */
+#contact{background:var(--bg2);position:relative;overflow:hidden}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:3rem;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:1.25rem}
+.contact-item{display:flex;align-items:center;gap:1rem;padding:1.25rem;border-radius:12px;background:var(--bg3);border:1px solid var(--border);transition:all 0.25s;text-decoration:none}.contact-item:hover{border-color:var(--border2);transform:translateX(4px)}
+.contact-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.contact-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px}
+.contact-val{font-size:14px;font-weight:500;color:var(--text)}
+.contact-form{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:2rem;display:flex;flex-direction:column;gap:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3)}
+.form-input{padding:11px 14px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);font-family:var(--sans);font-size:14px;transition:border-color 0.2s;outline:none}.form-input:focus{border-color:rgba(14,165,233,0.45)}.form-input::placeholder{color:var(--text3)}
+textarea.form-input{resize:vertical;min-height:110px}
+.form-btn{padding:13px;border-radius:10px;background:var(--accent);color:#fff;font-family:var(--sans);font-weight:500;font-size:14px;cursor:pointer;border:none;transition:all 0.25s}.form-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.form-success{display:none;text-align:center;padding:1rem;border-radius:8px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:var(--green);font-size:14px}
+footer{background:var(--bg);border-top:1px solid var(--border);padding:2rem;text-align:center}
+.footer-text{font-size:12px;color:var(--text3)}.footer-text a{color:var(--accent);text-decoration:none}
+
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr}.lb-inner{grid-template-columns:1fr}.lb-img{min-height:260px}.edu-item{grid-template-columns:100px 1fr}.edu-item::after{left:99px}.edu-dot{left:93px}.open-book{height:min(440px,60vh)}}
+@media(max-width:680px){nav{padding:1rem 1.25rem}.nav-links,.nav-cta{display:none}.hamburger{display:flex}section{padding:4rem 1.25rem}.hero-stats{gap:1.75rem}.form-row{grid-template-columns:1fr}.edu-item{grid-template-columns:1fr;gap:0.5rem}.edu-item::after,.edu-dot{display:none}.edu-year{text-align:left}.edu-body{padding-left:0}.open-book{height:min(360px,55vh)}.book-dl-btn span{display:none}.book-progress{display:none}}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#hero" class="nav-logo">H<span>.</span>Bhatti</a>
+  <ul class="nav-links">
+    <li><a href="#expertise">Expertise</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#mapping">Mapping</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:Harveybhatti2809@gmail.com" class="nav-cta">Hire Me</a>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#expertise" onclick="closeMobile()">Expertise</a>
+  <a href="#education" onclick="closeMobile()">Education</a>
+  <a href="#mapping" onclick="closeMobile()">Mapping</a>
+  <a href="#projects" onclick="closeMobile()">Projects</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<section id="hero">
+  <div class="grid-bg"></div><div class="hero-glow"></div><div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Open to Work &mdash; Actively Looking</div>
+    <h1 class="hero-name">Hardeep<br/><em>(Harvey)</em> Bhatti</h1>
+    <p class="hero-title">Urban &amp; Environmental Planner &mdash; GIS Analyst</p>
+    <p class="hero-desc">Fleming College graduate specializing in GIS-based spatial analysis, environmental planning, and land use policy. Turning complex data into clear planning decisions across Ontario.</p>
+    <div class="hero-btns">
+      <a href="#mapping" class="btn-primary">View My Work</a>
+      <a href="#contact" class="btn-ghost">Get In Touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Projects</div></div>
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Maps</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Policy Frameworks</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Municipalities</div></div>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div><span>Scroll</span></div>
+</section>
+
+<section id="expertise">
+  <div class="grid-bg"></div>
+  <div class="section-inner">
+    <p class="section-label">What I Do</p>
+    <h2 class="section-title">Areas of Expertise</h2>
+    <p class="section-sub">A cross-disciplinary skillset built at the intersection of spatial technology, environmental science, and Ontario planning policy.</p>
+    <div class="expertise-grid">
+      <div class="expertise-card" style="--card-color:#0ea5e9"><div class="expertise-icon" style="background:rgba(14,165,233,0.1)">🗺️</div><div class="expertise-name">GIS &amp; Spatial Analysis</div><div class="expertise-desc">Multi-criteria raster analysis, flood mapping, suitability modelling, and cartographic production using ArcGIS Pro and Ontario open datasets.</div><div class="expertise-tags"><span class="tag" style="background:rgba(14,165,233,0.1);color:#38bdf8;border:1px solid rgba(14,165,233,0.2)">ArcGIS Pro</span><span class="tag" style="background:rgba(14,165,233,0.1);color:#38bdf8;border:1px solid rgba(14,165,233,0.2)">Raster Analysis</span><span class="tag" style="background:rgba(14,165,233,0.1);color:#38bdf8;border:1px solid rgba(14,165,233,0.2)">Cartography</span></div></div>
+      <div class="expertise-card" style="--card-color:#10b981"><div class="expertise-icon" style="background:rgba(16,185,129,0.1)">🌿</div><div class="expertise-name">Environmental Planning</div><div class="expertise-desc">Natural Heritage Evaluations, ecological compensation planning, wetland and woodland assessment aligned with ORMCP, Greenbelt Plan, ESA 2007, and PPS 2024.</div><div class="expertise-tags"><span class="tag" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)">NHE</span><span class="tag" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)">ORMCP</span><span class="tag" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)">ESA 2007</span></div></div>
+      <div class="expertise-card" style="--card-color:#8b5cf6"><div class="expertise-icon" style="background:rgba(139,92,246,0.1)">📋</div><div class="expertise-name">Report Writing &amp; Planning Rationale</div><div class="expertise-desc">Full Planning Rationale reports for OPA and ZBA applications, policy compliance analysis against PPS 2024, Official Plans, Secondary Plans, and Zoning By-laws.</div><div class="expertise-tags"><span class="tag" style="background:rgba(139,92,246,0.1);color:#a78bfa;border:1px solid rgba(139,92,246,0.2)">PPS 2024</span><span class="tag" style="background:rgba(139,92,246,0.1);color:#a78bfa;border:1px solid rgba(139,92,246,0.2)">OPA / ZBA</span><span class="tag" style="background:rgba(139,92,246,0.1);color:#a78bfa;border:1px solid rgba(139,92,246,0.2)">Policy Writing</span></div></div>
+      <div class="expertise-card" style="--card-color:#f97316"><div class="expertise-icon" style="background:rgba(249,115,22,0.1)">🏙️</div><div class="expertise-name">Land Use &amp; Development Planning</div><div class="expertise-desc">Site suitability analysis, intensification planning, transit-oriented development assessment, and built form evaluation in Ontario's municipal planning context.</div><div class="expertise-tags"><span class="tag" style="background:rgba(249,115,22,0.1);color:#fb923c;border:1px solid rgba(249,115,22,0.2)">Intensification</span><span class="tag" style="background:rgba(249,115,22,0.1);color:#fb923c;border:1px solid rgba(249,115,22,0.2)">TOD</span><span class="tag" style="background:rgba(249,115,22,0.1);color:#fb923c;border:1px solid rgba(249,115,22,0.2)">Site Analysis</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="section-inner">
+    <p class="section-label">Academic Background</p>
+    <h2 class="section-title">Education</h2>
+    <p class="section-sub">Multidisciplinary training spanning environmental science, spatial analysis, and Ontario planning policy.</p>
+    <div class="edu-timeline">
+      <div class="edu-item">
+        <div class="edu-year">2024 – 2025</div><div class="edu-dot active"></div>
+        <div class="edu-body">
+          <div class="edu-degree">Graduate Certificate — Environmental and Land Management Planning</div>
+          <div class="edu-school">Fleming College, Lindsay</div><div class="edu-loc">Lindsay, Ontario, Canada</div>
+          <div class="edu-detail">Specialized postgraduate program covering GIS-based spatial analysis, environmental assessment, natural heritage evaluation, land use planning, stormwater management, and Ontario's planning policy framework including PPS 2024, Conservation Authorities Act, and Endangered Species Act.</div>
+        </div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-year">2020 – 2023</div><div class="edu-dot"></div>
+        <div class="edu-body">
+          <div class="edu-degree">Bachelor of Science (Honours) — Biotechnology</div>
+          <div class="edu-school">DAV University, Jalandhar</div><div class="edu-loc">Jalandhar, Punjab, India</div>
+          <div class="edu-detail">Undergraduate degree providing a strong foundation in environmental and life sciences, research methodology, and data analysis — skills directly applied to ecological assessment and natural heritage work in planning practice.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mapping" style="padding:6rem 0">
+  <div class="grid-bg"></div>
+  <div class="mapping-header">
+    <p class="section-label" style="text-align:center">Spatial Analysis</p>
+    <h2 class="section-title" style="text-align:center">Maps &amp; GIS Work</h2>
+  </div>
+  <div class="carousel-track" id="mapTrack"></div>
+  <div class="c-meta" id="mapMeta"></div>
+  <div class="c-controls">
+    <button class="c-btn" id="mapPrev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="dots" id="mapDots"></div>
+    <button class="c-btn" id="mapNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+  <p class="c-hint">Click the centre map to expand &middot; Arrow keys to navigate</p>
+</section>
+
+<section id="projects">
+  <div class="section-inner" style="margin-bottom:3rem">
+    <p class="section-label">Portfolio</p>
+    <h2 class="section-title">Projects</h2>
+    <p class="section-sub">Click any project to read the full report as an interactive book — and download it directly.</p>
+  </div>
+  <div class="proj-carousel-track" id="projTrack"></div>
+  <div class="c-meta" id="projMeta"></div>
+  <div class="c-controls">
+    <button class="c-btn" id="projPrev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="dots" id="projDots"></div>
+    <button class="c-btn" id="projNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="grid-bg"></div>
+  <div class="section-inner">
+    <p class="section-label">Get In Touch</p>
+    <h2 class="section-title">Let's Connect</h2>
+    <p class="section-sub">Open to full-time, contract, and internship roles in urban, regional, or environmental planning across Canada.</p>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <a href="mailto:Harveybhatti2809@gmail.com" class="contact-item"><div class="contact-icon" style="background:rgba(14,165,233,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg></div><div><div class="contact-label">Email</div><div class="contact-val">Harveybhatti2809@gmail.com</div></div></a>
+        <a href="tel:4378812809" class="contact-item"><div class="contact-icon" style="background:rgba(16,185,129,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div><div><div class="contact-label">Phone</div><div class="contact-val">+1 (437) 881-2809</div></div></a>
+        <a href="https://www.linkedin.com/in/h-b-harvy/" target="_blank" rel="noopener" class="contact-item"><div class="contact-icon" style="background:rgba(14,165,233,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div><div><div class="contact-label">LinkedIn</div><div class="contact-val">linkedin.com/in/h-b-harvy</div></div></a>
+        <div class="contact-item" style="cursor:default"><div class="contact-icon" style="background:rgba(249,115,22,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="contact-label">Location</div><div class="contact-val">Peterborough, Ontario &mdash; Open Canada-wide</div></div></div>
+      </div>
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input" placeholder="Your name" id="cfName"/></div>
+          <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="your@email.com" id="cfEmail"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Subject</label><input type="text" class="form-input" placeholder="Opportunity / Inquiry" id="cfSubject"/></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" placeholder="Tell me about the role or project..." id="cfMsg"></textarea></div>
+        <button class="form-btn" onclick="submitForm()">Send Message</button>
+        <div class="form-success" id="formSuccess">Message sent! I'll get back to you shortly.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><p class="footer-text">© 2025 Hardeep (Harvey) Bhatti &mdash; Urban &amp; Environmental Planner &middot; <a href="https://www.linkedin.com/in/h-b-harvy/" target="_blank">LinkedIn</a></p></footer>
+
+<!-- MAP LIGHTBOX -->
+<div class="lb-backdrop" id="mapLightbox" style="display:none">
+  <button class="lb-close-btn" onclick="closeMapLb()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="lb-inner">
+    <div class="lb-img"><img id="lbImg" src="" alt=""/></div>
+    <div class="lb-panel">
+      <span class="lb-badge" id="lbBadge"></span>
+      <div><h3 class="lb-title" id="lbTitle"></h3><p class="lb-loc" id="lbLoc"></p></div>
+      <hr class="lb-hr"/>
+      <p class="lb-desc" id="lbDesc"></p>
+      <div><p class="lb-tools-label">Tools &amp; Data</p><div class="lb-tools" id="lbTools"></div></div>
+      <div class="lb-nav">
+        <button class="lb-nav-btn" id="lbPrev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg> Prev</button>
+        <button class="lb-nav-btn" id="lbNext">Next <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK VIEWER -->
+<div id="bookViewer">
+  <div class="book-topbar">
+    <div><div class="book-info-title" id="bookTitle"></div><div class="book-info-loc" id="bookLoc"></div></div>
+    <div class="book-topbar-actions">
+      <a class="book-dl-btn" id="bookDlBtn" href="#" download>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Download PDF</span>
+      </a>
+      <button class="book-close-btn" onclick="closeBook()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+  </div>
+  <div class="book-stage">
+    <div class="book-shadow"></div>
+    <div class="open-book" id="openBook">
+      <div class="book-page book-page-left" id="pageLeft">
+        <div class="page-loading" id="loadLeft"><div class="page-spinner"></div><div class="page-loading-text">Loading...</div></div>
+        <canvas id="canvasLeft"></canvas>
+      </div>
+      <div class="book-spine"></div>
+      <div class="book-page book-page-right" id="pageRight">
+        <div class="page-loading" id="loadRight"><div class="page-spinner"></div><div class="page-loading-text">Loading...</div></div>
+        <canvas id="canvasRight"></canvas>
+      </div>
+      <div class="flip-container" id="flipEl" style="display:none">
+        <div class="flip-front"><canvas id="flipFront"></canvas></div>
+        <div class="flip-back"><canvas id="flipBack"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="book-controls">
+    <button class="book-ctrl-btn" id="bPrev" onclick="bookPrev()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg> Previous</button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <span class="book-page-counter" id="bookCounter">Page 1–2 of 1</span>
+      <div class="book-progress"><div class="book-progress-fill" id="bookProg" style="width:0%"></div></div>
+    </div>
+    <button class="book-ctrl-btn" id="bNext" onclick="bookNext()">Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────
+const MAPS=[
+  {id:1,title:"Flood Plain Mapping",loc:"Town of Goderich, ON",cat:"Hydrological Analysis",catColor:"#0ea5e9",desc:"Multi-layer flood risk analysis using 30-year precipitation data, slope classification, and waterbody features to identify six high-risk accumulation zones informing stormwater capital planning.",tools:"ArcGIS Pro · Raster Analysis · 30-Year Precipitation Data · Slope Modelling",img:"maps/floodmapping.jpg"},
+  {id:2,title:"Residential Site Suitability",loc:"Town of Goderich, ON",cat:"Multi-Criteria Analysis",catColor:"#8b5cf6",desc:"Weighted overlay analysis across six factors — zoning, slope, building footprints, land cover, road access, and watercourses — to identify optimal parcels for residential intensification.",tools:"ArcGIS Pro · Weighted Overlay · Raster Scoring · Ontario GeoHub",img:"maps/ResidentialSiteSui.png"},
+  {id:3,title:"Transit Accessibility Analysis",loc:"Town of Lindsay, ON",cat:"Transportation Planning",catColor:"#f59e0b",desc:"Service area mapping of all four CKL transit routes within 800m of the proposed development site, demonstrating transit-oriented development compliance.",tools:"ArcGIS Pro · Network Analysis · Buffer Analysis · CKL Transit Data",img:"maps/transit_lindsay.jpg"},
+  {id:4,title:"Natural Heritage Features Map",loc:"Township of Scugog, ON",cat:"Environmental Assessment",catColor:"#10b981",desc:"Desktop Phase 1 NHE mapping wetlands, woodlands, and Blackstock Creek within 120m of the proposed development envelope on the Oak Ridges Moraine with 30m vegetation protection zones.",tools:"ArcGIS Pro · NHIC · SOLRIS 3.0 · Ontario GeoHub · GBIF",img:"maps/nhe_scugog.jpg"},
+  {id:5,title:"Road Network Classification",loc:"Town of Lindsay, ON",cat:"Transportation Planning",catColor:"#f59e0b",desc:"Road hierarchy mapping from Lindsay Zoning By-law 2000-75 showing highway, arterial, collector, and local street classifications with LiDAR-derived elevation base layer.",tools:"ArcGIS Pro · LiDAR Elevation · CKL Road Data · Cartography",img:"maps/road_network.jpg"},
+  {id:6,title:"Zoning By-law Map",loc:"Town of Lindsay, ON",cat:"Land Use Planning",catColor:"#f97316",desc:"Zoning layer from Lindsay Comprehensive Zoning By-law 2000-75 highlighting the subject RH1-S5(H1) zone and surrounding residential, commercial, and community facility designations.",tools:"ArcGIS Pro · Municipal Open Data · Cartography",img:"maps/zoning_lindsay.jpg"},
+  {id:7,title:"Wetland & Woodland Classification",loc:"Township of Scugog, ON",cat:"Natural Heritage",catColor:"#14b8a6",desc:"SOLRIS 3.0 vegetation classification mapping thicket swamp, treed swamp, deciduous and coniferous woodland within the area of influence of the proposed golf course development.",tools:"ArcGIS Pro · SOLRIS 3.0 · NHIC Make-a-Map · Aerial Imagery",img:"maps/wetlands_scugog.jpg"},
+  {id:8,title:"Official Plan Land Use Schedule",loc:"City of Kawartha Lakes, ON",cat:"Policy Mapping",catColor:"#6366f1",desc:"Schedule A-3 from the City of Kawartha Lakes Official Plan (March 2025) showing Urban Settlement Area designations with the subject site within the Lindsay Secondary Plan boundary.",tools:"ArcGIS Pro · CKL Official Plan Data · Cartography",img:"maps/op_ckl.jpg"},
+  {id:9,title:"Bird Species Occurrence Mapping",loc:"Township of Scugog, ON",cat:"Ecological Assessment",catColor:"#14b8a6",desc:"Spatial mapping of 27 bird species recorded within the study parcel using NatureCounts, Ontario Breeding Bird Atlas, and GBIF occurrence data including SARO/COSEWIC species at risk flags.",tools:"ArcGIS Pro · NatureCounts · GBIF · NHIC · Ontario Bird Atlas",img:"maps/birds_scugog.jpg"},
+  {id:10,title:"Lindsay Secondary Plan Designations",loc:"Town of Lindsay, ON",cat:"Land Use Planning",catColor:"#f97316",desc:"Lindsay Secondary Plan Schedule F-1 (March 2025) showing Institutions and Community Facilities designation on the subject site, with intensification corridors and surrounding mixed-use zones.",tools:"ArcGIS Pro · Lindsay Secondary Plan · Cartography",img:"maps/secondary_plan.jpg"},
+];
+const PROJECTS=[
+  {id:1,title:"Mid-Rise Residential Planning Rationale",loc:"Lindsay, City of Kawartha Lakes",cat:"Development Planning",catColor:"#8b5cf6",desc:"Full Planning Rationale for a proposed 260-unit, 6-storey purpose-built rental building. Covers PPS 2024, CKLOP 2012, Lindsay Secondary Plan, and Zoning By-law 2000-75 with full zoning amendment table and transit analysis.",tools:"ArcGIS Pro · PPS 2024 · CKLOP 2012 · ZBA 2000-75 · Policy Writing",img:"projects/planning_rationale_cover.jpg",pdf:"projects/PLANNING_RATIONALE_Midrise_Lindsay.pdf"},
+  {id:2,title:"Natural Heritage Evaluation — Phase 1",loc:"Township of Scugog, Durham Region",cat:"Environmental Assessment",catColor:"#10b981",desc:"Desktop Phase 1 NHE for a proposed 5-hole golf course on the Oak Ridges Moraine. Assessed compliance with ORMCP 2017, Greenbelt Plan, ESA 2007, Fisheries Act, and Migratory Birds Convention Act.",tools:"ArcGIS Pro · NHIC · GBIF · NatureCounts · Fish-On-Line · SOLRIS 3.0",img:"projects/nhe_cover.jpg",pdf:"projects/NaturalHeritageEvaluation_Project.pdf"},
+  {id:3,title:"Residential Site Suitability Analysis",loc:"Town of Goderich, ON",cat:"Spatial Planning",catColor:"#0ea5e9",desc:"Multi-criteria GIS analysis identifying optimal residential development parcels using weighted overlay of six factors: zoning, slope and elevation, building footprints, land cover, road proximity, and watercourses.",tools:"ArcGIS Pro · Weighted Overlay · Ontario GeoHub · Raster Analysis",img:"projects/suitability_cover.jpg",pdf:"projects/ResidentialSuitability_Goderich.pdf"},
+  {id:4,title:"Flood Plain Mapping Analysis",loc:"Town of Goderich, ON",cat:"Hydrological Planning",catColor:"#0ea5e9",desc:"Flood risk analysis using 30-year precipitation data, slope modelling, and waterbody features to identify six high-risk accumulation zones informing stormwater infrastructure prioritization under PPS 2024 Section 3.",tools:"ArcGIS Pro · Precipitation Data · DEM · Raster Analysis · Cartography",img:"projects/flood_cover.jpg",pdf:"projects/FloodMapping_Goderich.pdf"},
+  {id:5,title:"Integrated Development Management Plan",loc:"Proposed Provincial Park, Goderich",cat:"Park & Resource Planning",catColor:"#f59e0b",desc:"Comprehensive management plan for a proposed provincial park addressing conservation zones, visitor management, ecological sensitivity areas, access planning, and long-term stewardship objectives.",tools:"ArcGIS Pro · Policy Writing · Ontario Parks Framework · Spatial Analysis",img:"projects/park_cover.jpg",pdf:"projects/ParkManagementPlan_Goderich.pdf"},
+  {id:6,title:"Ecological Compensation Plan",loc:"Municipality of Port Hope, ON",cat:"Environmental Planning",catColor:"#14b8a6",desc:"Ecological compensation strategy for the Municipality of Port Hope addressing habitat loss mitigation under ESA 2007. Includes habitat quantity and quality analysis, compensation ratios, restoration site identification, and monitoring framework.",tools:"ArcGIS Pro · ESA 2007 · Habitat Assessment · Policy Writing · MNRF Guidance",img:"projects/eco_comp_cover.jpg",pdf:"projects/EcologicalCompensation_PortHope.pdf"},
+];
+
+// ── CAROUSEL ─────────────────────────────────────────────────────
+function makeCarousel(data,trackId,metaId,prevId,nextId,dotsId,cardClass,isProject){
+  let active=0,paused=false,transitioning=false;
+  const total=data.length,track=document.getElementById(trackId),meta=document.getElementById(metaId),dotsEl=document.getElementById(dotsId);
+  const PS={center:{transform:'translateX(0) scale(1)',zIndex:10,opacity:1,filter:'brightness(1)'},right1:{transform:'translateX(64%) scale(0.82)',zIndex:7,opacity:0.82,filter:'brightness(0.65)'},left1:{transform:'translateX(-64%) scale(0.82)',zIndex:7,opacity:0.82,filter:'brightness(0.65)'},right2:{transform:'translateX(112%) scale(0.66)',zIndex:4,opacity:0.4,filter:'brightness(0.45)'},left2:{transform:'translateX(-112%) scale(0.66)',zIndex:4,opacity:0.4,filter:'brightness(0.45)'},hidden:{transform:'translateX(0) scale(0.5)',zIndex:0,opacity:0,filter:'brightness(0.2)'}};
+  function gp(i){const d=((i-active)%total+total)%total;if(d===0)return'center';if(d===1)return'right1';if(d===total-1)return'left1';if(d===2)return'right2';if(d===total-2)return'left2';return'hidden';}
+  function ap(el,pos){const s=PS[pos]||PS.hidden;el.style.transform=s.transform;el.style.zIndex=s.zIndex;el.style.opacity=s.opacity;el.style.filter=s.filter;}
+  function goTo(i){if(transitioning)return;transitioning=true;active=((i%total)+total)%total;Array.from(track.children).forEach((c,idx)=>ap(c,gp(idx)));uM();uD();setTimeout(()=>{transitioning=false},520);}
+  function uD(){dotsEl.innerHTML='';data.forEach((_,i)=>{const b=document.createElement('button');b.className='dot'+(i===active?' active':'');b.onclick=()=>goTo(i);dotsEl.appendChild(b);});}
+  function uM(){if(!meta)return;meta.style.opacity='0';setTimeout(()=>{const item=data[active];meta.innerHTML=`<div class="c-meta-title">${item.title}</div><p class="c-meta-desc">${item.desc}</p><p class="c-meta-tools">${item.tools}</p>`;meta.style.opacity='1';},150);}
+  function build(){
+    track.innerHTML='';
+    data.forEach((item,i)=>{
+      const div=document.createElement('div');div.className=cardClass;div.dataset.index=i;
+      if(isProject){
+        div.innerHTML=`<img class="p-card-img" src="${item.img}" alt="${item.title}" onerror="this.style.display='none'"/><div class="p-card-body"><div class="p-card-cat" style="color:${item.catColor}">${item.cat}</div><div class="p-card-title">${item.title}</div><div class="p-card-loc">${item.loc}</div><div class="p-card-hint">📖 Click centre to read full report</div></div>`;
+      } else {
+        div.innerHTML=`<img src="${item.img}" alt="${item.title}" onerror="this.style.display='none'"/><div class="c-overlay"></div><span class="c-cat" style="color:${item.catColor}">${item.cat}</span><div class="c-title">${item.title}<div class="c-loc">${item.loc}</div></div><div class="expand-hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"/></svg></div>`;
+      }
+      ap(div,gp(i));
+      div.addEventListener('click',()=>{const pos=gp(parseInt(div.dataset.index));if(pos==='center'){if(isProject)openBook(item);else openMapLb(item,data);}else goTo(parseInt(div.dataset.index));});
+      track.appendChild(div);
+    });
+    uD();uM();
+  }
+  document.getElementById(prevId).onclick=()=>goTo(active-1);
+  document.getElementById(nextId).onclick=()=>goTo(active+1);
+  track.addEventListener('mouseenter',()=>paused=true);track.addEventListener('mouseleave',()=>paused=false);
+  setInterval(()=>{if(!paused&&document.getElementById('bookViewer').style.display==='none'&&document.getElementById('mapLightbox').style.display==='none')goTo(active+1);},3800);
+  build();
+}
+
+// ── MAP LIGHTBOX ──────────────────────────────────────────────────
+let lbData=[],lbIndex=0;
+function openMapLb(item,data){lbData=data;lbIndex=data.findIndex(d=>d.id===item.id);renderMapLb();document.getElementById('mapLightbox').style.display='flex';document.body.style.overflow='hidden';}
+function renderMapLb(){
+  const item=lbData[lbIndex];
+  document.getElementById('lbImg').src=item.img;document.getElementById('lbImg').alt=item.title;
+  const badge=document.getElementById('lbBadge');badge.textContent=item.cat;badge.style.color=item.catColor;badge.style.background=item.catColor+'18';badge.style.border=`1px solid ${item.catColor}35`;
+  document.getElementById('lbTitle').textContent=item.title;document.getElementById('lbLoc').textContent=item.loc;document.getElementById('lbDesc').textContent=item.desc;
+  const te=document.getElementById('lbTools');te.innerHTML='';item.tools.split(' · ').forEach(t=>{const s=document.createElement('span');s.className='lb-tool';s.textContent=t;te.appendChild(s);});
+  document.getElementById('lbPrev').onclick=()=>{lbIndex=((lbIndex-1)+lbData.length)%lbData.length;renderMapLb();};
+  document.getElementById('lbNext').onclick=()=>{lbIndex=(lbIndex+1)%lbData.length;renderMapLb();};
+}
+function closeMapLb(){document.getElementById('mapLightbox').style.display='none';document.body.style.overflow='';}
+document.getElementById('mapLightbox').addEventListener('click',e=>{if(e.target===document.getElementById('mapLightbox'))closeMapLb();});
+
+// ── BOOK VIEWER ────────────────────────────────────────────────────
+if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+let bookPdf=null,bookSpread=0,bookTotal=0,bookFlipping=false;
+
+async function openBook(item){
+  document.getElementById('bookTitle').textContent=item.title;
+  document.getElementById('bookLoc').textContent=item.loc;
+  const dlBtn=document.getElementById('bookDlBtn');dlBtn.href=item.pdf;dlBtn.download=item.pdf.split('/').pop();
+  document.getElementById('bookViewer').style.display='flex';document.body.style.overflow='hidden';
+  bookSpread=0;bookPdf=null;
+  setLoading(true,true);
+  try{
+    bookPdf=await pdfjsLib.getDocument(item.pdf).promise;
+    bookTotal=bookPdf.numPages;
+    await renderSpread();
+  }catch(e){
+    document.getElementById('loadLeft').innerHTML='<div style="text-align:center;padding:1.5rem;color:#999;font-size:13px;font-family:var(--sans)">PDF not found.<br/>Add your PDF to the projects/ folder<br/>with the filename shown in the data.</div>';
+    document.getElementById('loadLeft').style.display='flex';
+    document.getElementById('loadRight').style.display='none';
+  }
+}
+function closeBook(){document.getElementById('bookViewer').style.display='none';document.body.style.overflow='';bookPdf=null;}
+function setLoading(l,r){
+  document.getElementById('loadLeft').style.display=l?'flex':'none';document.getElementById('canvasLeft').style.display=l?'none':'block';
+  document.getElementById('loadRight').style.display=r?'flex':'none';document.getElementById('canvasRight').style.display=r?'none':'block';
+}
+async function renderPage(num,canvas){
+  if(!bookPdf||num<1||num>bookTotal)return;
+  const page=await bookPdf.getPage(num);
+  const cont=canvas.parentElement;const w=cont.clientWidth||380;const h=cont.clientHeight||520;
+  const vp=page.getViewport({scale:1});const scale=Math.min(w/vp.width,h/vp.height)*window.devicePixelRatio;
+  const svp=page.getViewport({scale});
+  canvas.width=svp.width;canvas.height=svp.height;
+  await page.render({canvasContext:canvas.getContext('2d'),viewport:svp}).promise;
+}
+async function renderSpread(){
+  const L=bookSpread*2+1,R=bookSpread*2+2;
+  setLoading(true,true);
+  await Promise.all([renderPage(L,document.getElementById('canvasLeft')),renderPage(R,document.getElementById('canvasRight'))]);
+  document.getElementById('loadLeft').style.display='none';document.getElementById('canvasLeft').style.display='block';
+  if(R<=bookTotal){document.getElementById('loadRight').style.display='none';document.getElementById('canvasRight').style.display='block';}
+  else{document.getElementById('loadRight').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ccc;font-family:var(--sans);font-size:13px">End of document</div>';document.getElementById('loadRight').style.display='flex';document.getElementById('canvasRight').style.display='none';}
+  updateBookUI();
+}
+function updateBookUI(){
+  const totalSpreads=Math.ceil(bookTotal/2);const L=bookSpread*2+1;
+  document.getElementById('bookCounter').textContent=`Pages ${L}–${Math.min(L+1,bookTotal)} of ${bookTotal}`;
+  document.getElementById('bookProg').style.width=(bookTotal>1?((L-1)/(bookTotal-1))*100:100)+'%';
+  document.getElementById('bPrev').disabled=bookSpread===0;
+  document.getElementById('bNext').disabled=bookSpread>=totalSpreads-1;
+}
+async function doFlip(dir){
+  if(bookFlipping||!bookPdf)return;
+  const totalSpreads=Math.ceil(bookTotal/2);
+  if(dir==='next'&&bookSpread>=totalSpreads-1)return;
+  if(dir==='prev'&&bookSpread===0)return;
+  bookFlipping=true;
+  const flipEl=document.getElementById('flipEl');
+  const front=document.getElementById('flipFront');
+  const back=document.getElementById('flipBack');
+  const nextSpread=dir==='next'?bookSpread+1:bookSpread-1;
+  if(dir==='next'){
+    await renderPage(bookSpread*2+2,front);
+    await renderPage(nextSpread*2+1,back);
+    flipEl.style.left='50%';flipEl.style.transformOrigin='left center';
+    flipEl.style.display='block';flipEl.className='flip-container';
+    void flipEl.offsetWidth;flipEl.classList.add('do-flip-right');
+  } else {
+    await renderPage(bookSpread*2+1,front);
+    await renderPage(nextSpread*2+2,back);
+    flipEl.style.left='0';flipEl.style.transformOrigin='right center';
+    flipEl.style.display='block';flipEl.className='flip-container';
+    void flipEl.offsetWidth;flipEl.classList.add('do-flip-left');
+  }
+  setTimeout(async()=>{
+    flipEl.style.display='none';flipEl.className='flip-container';
+    bookSpread=nextSpread;await renderSpread();bookFlipping=false;
+  },660);
+}
+function bookNext(){doFlip('next');}
+function bookPrev(){doFlip('prev');}
+
+// ── NAV, MOBILE, KEYBOARD, FORM ───────────────────────────────────
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60));
+document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+function closeMobile(){document.getElementById('mobileMenu').classList.remove('open');}
+document.addEventListener('keydown',e=>{
+  const bv=document.getElementById('bookViewer').style.display!=='none';
+  const ml=document.getElementById('mapLightbox').style.display!=='none';
+  if(bv){if(e.key==='Escape')closeBook();if(e.key==='ArrowRight')bookNext();if(e.key==='ArrowLeft')bookPrev();}
+  else if(ml){if(e.key==='Escape')closeMapLb();if(e.key==='ArrowRight'){lbIndex=(lbIndex+1)%lbData.length;renderMapLb();}if(e.key==='ArrowLeft'){lbIndex=((lbIndex-1)+lbData.length)%lbData.length;renderMapLb();}}
+});
+function submitForm(){
+  const n=document.getElementById('cfName').value.trim(),e=document.getElementById('cfEmail').value.trim(),m=document.getElementById('cfMsg').value.trim();
+  if(!n||!e||!m){alert('Please fill in all required fields.');return;}
+  window.location.href=`mailto:Harveybhatti2809@gmail.com?subject=${encodeURIComponent(document.getElementById('cfSubject').value||'Portfolio Inquiry')}&body=${encodeURIComponent('Name: '+n+'\nEmail: '+e+'\n\n'+m)}`;
+  document.getElementById('formSuccess').style.display='block';setTimeout(()=>{document.getElementById('formSuccess').style.display='none';},4000);
+}
+makeCarousel(MAPS,'mapTrack','mapMeta','mapPrev','mapNext','mapDots','c-card',false);
+makeCarousel(PROJECTS,'projTrack','projMeta','projPrev','projNext','projDots','p-card',true);
+
+// ── MOBILE BOOK: single page mode ────────────────────────────────
+function isMobile(){return window.innerWidth<=680;}
+
+// Override renderSpread to show one page on phones
+const _renderSpread=renderSpread;
+async function renderSpread(){
+  if(isMobile()){
+    // hide right page entirely on phones
+    document.getElementById('pageRight').style.display='none';
+    document.getElementById('bookSpine')||null;
+    document.querySelectorAll('.book-spine').forEach(s=>s.style.display='none');
+    document.getElementById('openBook').style.width='min(380px,92vw)';
+    const L=bookSpread*2+1;
+    setLoading(true,false);
+    document.getElementById('loadRight').style.display='none';
+    document.getElementById('canvasRight').style.display='none';
+    await renderPage(L,document.getElementById('canvasLeft'));
+    document.getElementById('loadLeft').style.display='none';
+    document.getElementById('canvasLeft').style.display='block';
+    updateBookUI();
+  } else {
+    document.getElementById('pageRight').style.display='block';
+    document.querySelectorAll('.book-spine').forEach(s=>s.style.display='block');
+    document.getElementById('openBook').style.width='';
+    await _renderSpread();
+  }
+}
+
+// Override doFlip for mobile — simple crossfade instead of 3D flip
+const _doFlip=doFlip;
+async function doFlip(dir){
+  if(isMobile()){
+    if(bookFlipping||!bookPdf)return;
+    const totalSpreads=Math.ceil(bookTotal/2);
+    if(dir==='next'&&bookSpread>=totalSpreads-1)return;
+    if(dir==='prev'&&bookSpread===0)return;
+    bookFlipping=true;
+    const canv=document.getElementById('canvasLeft');
+    canv.style.transition='opacity 0.25s ease';
+    canv.style.opacity='0';
+    bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
+    await renderSpread();
+    canv.style.opacity='1';
+    setTimeout(()=>{canv.style.transition='';bookFlipping=false;},260);
+  } else {
+    await _doFlip(dir);
+  }
+}
+
+// ── SWIPE SUPPORT ─────────────────────────────────────────────────
+function addSwipe(el,onLeft,onRight,threshold=50){
+  let sx=null,sy=null;
+  el.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  el.addEventListener('touchend',e=>{
+    if(sx===null)return;
+    const dx=e.changedTouches[0].clientX-sx;
+    const dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>threshold){
+      if(dx<0)onLeft();else onRight();
+    }
+    sx=null;sy=null;
+  },{passive:true});
+}
+
+// Swipe on map carousel track
+addSwipe(
+  document.getElementById('mapTrack'),
+  ()=>document.getElementById('mapNext').click(),
+  ()=>document.getElementById('mapPrev').click()
+);
+
+// Swipe on project carousel track
+addSwipe(
+  document.getElementById('projTrack'),
+  ()=>document.getElementById('projNext').click(),
+  ()=>document.getElementById('projPrev').click()
+);
+
+// Swipe on book viewer (stage area)
+addSwipe(
+  document.getElementById('bookViewer'),
+  ()=>bookNext(),
+  ()=>bookPrev()
+);
+
+// Swipe on map lightbox
+addSwipe(
+  document.getElementById('mapLightbox'),
+  ()=>{lbIndex=(lbIndex+1)%lbData.length;renderMapLb();},
+  ()=>{lbIndex=((lbIndex-1)+lbData.length)%lbData.length;renderMapLb();}
+);
+
+// Recheck on resize (e.g. rotating device)
+window.addEventListener('resize',()=>{if(bookPdf)renderSpread();});
+</script>
+</body>
+</html>
