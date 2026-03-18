@@ -502,52 +502,78 @@ async function renderPage(num,canvas){
   canvas.width=svp.width;canvas.height=svp.height;
   await page.render({canvasContext:canvas.getContext('2d'),viewport:svp}).promise;
 }
+function isMobile(){return window.innerWidth<=680;}
+
 async function renderSpread(){
-  const L=bookSpread*2+1,R=bookSpread*2+2;
-  setLoading(true,true);
-  await Promise.all([renderPage(L,document.getElementById('canvasLeft')),renderPage(R,document.getElementById('canvasRight'))]);
-  document.getElementById('loadLeft').style.display='none';document.getElementById('canvasLeft').style.display='block';
-  if(R<=bookTotal){document.getElementById('loadRight').style.display='none';document.getElementById('canvasRight').style.display='block';}
-  else{document.getElementById('loadRight').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ccc;font-family:var(--sans);font-size:13px">End of document</div>';document.getElementById('loadRight').style.display='flex';document.getElementById('canvasRight').style.display='none';}
-  updateBookUI();
-}
-function updateBookUI(){
-  const totalSpreads=Math.ceil(bookTotal/2);const L=bookSpread*2+1;
-  document.getElementById('bookCounter').textContent=`Pages ${L}–${Math.min(L+1,bookTotal)} of ${bookTotal}`;
-  document.getElementById('bookProg').style.width=(bookTotal>1?((L-1)/(bookTotal-1))*100:100)+'%';
-  document.getElementById('bPrev').disabled=bookSpread===0;
-  document.getElementById('bNext').disabled=bookSpread>=totalSpreads-1;
-}
-async function doFlip(dir){
-  if(bookFlipping||!bookPdf)return;
-  const totalSpreads=Math.ceil(bookTotal/2);
-  if(dir==='next'&&bookSpread>=totalSpreads-1)return;
-  if(dir==='prev'&&bookSpread===0)return;
-  bookFlipping=true;
-  const flipEl=document.getElementById('flipEl');
-  const front=document.getElementById('flipFront');
-  const back=document.getElementById('flipBack');
-  const nextSpread=dir==='next'?bookSpread+1:bookSpread-1;
-  if(dir==='next'){
-    await renderPage(bookSpread*2+2,front);
-    await renderPage(nextSpread*2+1,back);
-    flipEl.style.left='50%';flipEl.style.transformOrigin='left center';
-    flipEl.style.display='block';flipEl.className='flip-container';
-    void flipEl.offsetWidth;flipEl.classList.add('do-flip-right');
+  if(isMobile()){
+    document.getElementById('pageRight').style.display='none';
+    document.querySelectorAll('.book-spine').forEach(s=>s.style.display='none');
+    document.getElementById('openBook').style.width='min(380px,92vw)';
+    const L=bookSpread*2+1;
+    setLoading(true,false);
+    document.getElementById('loadRight').style.display='none';
+    document.getElementById('canvasRight').style.display='none';
+    await renderPage(L,document.getElementById('canvasLeft'));
+    document.getElementById('loadLeft').style.display='none';
+    document.getElementById('canvasLeft').style.display='block';
+    updateBookUI();
   } else {
-    await renderPage(bookSpread*2+1,front);
-    await renderPage(nextSpread*2+2,back);
-    flipEl.style.left='0';flipEl.style.transformOrigin='right center';
-    flipEl.style.display='block';flipEl.className='flip-container';
-    void flipEl.offsetWidth;flipEl.classList.add('do-flip-left');
+    document.getElementById('pageRight').style.display='block';
+    document.querySelectorAll('.book-spine').forEach(s=>s.style.display='block');
+    document.getElementById('openBook').style.width='';
+    const L=bookSpread*2+1,R=bookSpread*2+2;
+    setLoading(true,true);
+    await Promise.all([renderPage(L,document.getElementById('canvasLeft')),renderPage(R,document.getElementById('canvasRight'))]);
+    document.getElementById('loadLeft').style.display='none';document.getElementById('canvasLeft').style.display='block';
+    if(R<=bookTotal){document.getElementById('loadRight').style.display='none';document.getElementById('canvasRight').style.display='block';}
+    else{document.getElementById('loadRight').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ccc;font-family:var(--sans);font-size:13px">End of document</div>';document.getElementById('loadRight').style.display='flex';document.getElementById('canvasRight').style.display='none';}
+    updateBookUI();
   }
-  setTimeout(async()=>{
-    flipEl.style.display='none';flipEl.className='flip-container';
-    bookSpread=nextSpread;await renderSpread();bookFlipping=false;
-  },660);
 }
-function bookNext(){doFlip('next');}
-function bookPrev(){doFlip('prev');}
+
+async function doFlip(dir){
+  if(isMobile()){
+    if(bookFlipping||!bookPdf)return;
+    const totalSpreads=Math.ceil(bookTotal/2);
+    if(dir==='next'&&bookSpread>=totalSpreads-1)return;
+    if(dir==='prev'&&bookSpread===0)return;
+    bookFlipping=true;
+    const canv=document.getElementById('canvasLeft');
+    canv.style.transition='opacity 0.25s ease';
+    canv.style.opacity='0';
+    bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
+    await renderSpread();
+    canv.style.opacity='1';
+    setTimeout(()=>{canv.style.transition='';bookFlipping=false;},260);
+  } else {
+    if(bookFlipping||!bookPdf)return;
+    const totalSpreads=Math.ceil(bookTotal/2);
+    if(dir==='next'&&bookSpread>=totalSpreads-1)return;
+    if(dir==='prev'&&bookSpread===0)return;
+    bookFlipping=true;
+    const flipEl=document.getElementById('flipEl');
+    const front=document.getElementById('flipFront');
+    const back=document.getElementById('flipBack');
+    const nextSpread=dir==='next'?bookSpread+1:bookSpread-1;
+    if(dir==='next'){
+      await renderPage(bookSpread*2+2,front);
+      await renderPage(nextSpread*2+1,back);
+      flipEl.style.left='50%';flipEl.style.transformOrigin='left center';
+      flipEl.style.display='block';flipEl.className='flip-container';
+      void flipEl.offsetWidth;flipEl.classList.add('do-flip-right');
+    } else {
+      await renderPage(bookSpread*2+1,front);
+      await renderPage(nextSpread*2+2,back);
+      flipEl.style.left='0';flipEl.style.transformOrigin='right center';
+      flipEl.style.display='block';flipEl.className='flip-container';
+      void flipEl.offsetWidth;flipEl.classList.add('do-flip-left');
+    }
+    setTimeout(async()=>{
+      flipEl.style.display='none';flipEl.className='flip-container';
+      bookSpread=nextSpread;await renderSpread();bookFlipping=false;
+    },660);
+  }
+}
 
 // ── NAV, MOBILE, KEYBOARD, FORM ───────────────────────────────────
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60));
@@ -568,54 +594,7 @@ function submitForm(){
 makeCarousel(MAPS,'mapTrack','mapMeta','mapPrev','mapNext','mapDots','c-card',false);
 makeCarousel(PROJECTS,'projTrack','projMeta','projPrev','projNext','projDots','p-card',true);
 
-// ── MOBILE BOOK: single page mode ────────────────────────────────
-function isMobile(){return window.innerWidth<=680;}
 
-// Override renderSpread to show one page on phones
-const _renderSpread=renderSpread;
-async function renderSpread(){
-  if(isMobile()){
-    // hide right page entirely on phones
-    document.getElementById('pageRight').style.display='none';
-    document.getElementById('bookSpine')||null;
-    document.querySelectorAll('.book-spine').forEach(s=>s.style.display='none');
-    document.getElementById('openBook').style.width='min(380px,92vw)';
-    const L=bookSpread*2+1;
-    setLoading(true,false);
-    document.getElementById('loadRight').style.display='none';
-    document.getElementById('canvasRight').style.display='none';
-    await renderPage(L,document.getElementById('canvasLeft'));
-    document.getElementById('loadLeft').style.display='none';
-    document.getElementById('canvasLeft').style.display='block';
-    updateBookUI();
-  } else {
-    document.getElementById('pageRight').style.display='block';
-    document.querySelectorAll('.book-spine').forEach(s=>s.style.display='block');
-    document.getElementById('openBook').style.width='';
-    await _renderSpread();
-  }
-}
-
-// Override doFlip for mobile — simple crossfade instead of 3D flip
-const _doFlip=doFlip;
-async function doFlip(dir){
-  if(isMobile()){
-    if(bookFlipping||!bookPdf)return;
-    const totalSpreads=Math.ceil(bookTotal/2);
-    if(dir==='next'&&bookSpread>=totalSpreads-1)return;
-    if(dir==='prev'&&bookSpread===0)return;
-    bookFlipping=true;
-    const canv=document.getElementById('canvasLeft');
-    canv.style.transition='opacity 0.25s ease';
-    canv.style.opacity='0';
-    bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
-    await renderSpread();
-    canv.style.opacity='1';
-    setTimeout(()=>{canv.style.transition='';bookFlipping=false;},260);
-  } else {
-    await _doFlip(dir);
-  }
-}
 
 // ── SWIPE SUPPORT ─────────────────────────────────────────────────
 function addSwipe(el,onLeft,onRight,threshold=50){
