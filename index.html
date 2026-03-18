@@ -472,14 +472,16 @@ document.getElementById('bookViewer').style.display='flex';
 document.body.style.overflow='hidden';
 bookSpread=0;
 bookPdf=null;
+document.getElementById('loadLeft').innerHTML='<div class="page-spinner"></div><div class="page-loading-text">Loading...</div>';
+document.getElementById('loadRight').innerHTML='<div class="page-spinner"></div><div class="page-loading-text">Loading...</div>';
+setLoading(true,true);
 setLoading(true,true);
 
 try{
-  const resp = await fetch(pdfUrl);
-  if(!resp.ok) throw new Error('Not found');
-  const blob = await resp.blob();
-  const blobUrl = URL.createObjectURL(blob);
-  bookPdf = await pdfjsLib.getDocument(blobUrl).promise;
+ const resp = await fetch(pdfUrl);
+if(!resp.ok) throw new Error('Not found');
+const arrayBuffer = await resp.arrayBuffer();
+bookPdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
     bookTotal=bookPdf.numPages;
     await renderSpread();
   }catch(e){
