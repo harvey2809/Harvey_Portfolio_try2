@@ -475,7 +475,11 @@ bookPdf=null;
 setLoading(true,true);
 
 try{
-  bookPdf = await pdfjsLib.getDocument(pdfUrl).promise;
+  const resp = await fetch(pdfUrl);
+  if(!resp.ok) throw new Error('Not found');
+  const blob = await resp.blob();
+  const blobUrl = URL.createObjectURL(blob);
+  bookPdf = await pdfjsLib.getDocument(blobUrl).promise;
     bookTotal=bookPdf.numPages;
     await renderSpread();
   }catch(e){
