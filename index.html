@@ -559,46 +559,20 @@ function updateBookUI(){
   document.getElementById('bNext').disabled=bookSpread>=totalSpreads-1;
 }
 async function doFlip(dir){
-  if(isMobile()){
-    if(bookFlipping||!bookPdf)return;
-    const totalSpreads=Math.ceil(bookTotal/2);
-    if(dir==='next'&&bookSpread>=totalSpreads-1)return;
-    if(dir==='prev'&&bookSpread===0)return;
-    bookFlipping=true;
-    const canv=document.getElementById('canvasLeft');
-    canv.style.transition='opacity 0.25s ease';canv.style.opacity='0';
+  if(bookFlipping||!bookPdf)return;
+  const totalSpreads=Math.ceil(bookTotal/2);
+  if(dir==='next'&&bookSpread>=totalSpreads-1)return;
+  if(dir==='prev'&&bookSpread===0)return;
+  bookFlipping=true;
+  const book=document.getElementById('openBook');
+  book.style.transition='opacity 0.25s ease';
+  book.style.opacity='0';
+  setTimeout(async()=>{
     bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
     await renderSpread();
-    canv.style.opacity='1';
-    setTimeout(()=>{canv.style.transition='';bookFlipping=false;},260);
-  }else{
-    if(bookFlipping||!bookPdf)return;
-    const totalSpreads=Math.ceil(bookTotal/2);
-    if(dir==='next'&&bookSpread>=totalSpreads-1)return;
-    if(dir==='prev'&&bookSpread===0)return;
-    bookFlipping=true;
-    const flipEl=document.getElementById('flipEl');
-    const front=document.getElementById('flipFront');
-    const back=document.getElementById('flipBack');
-    const nextSpread=dir==='next'?bookSpread+1:bookSpread-1;
-    if(dir==='next'){
-      await renderPage(bookSpread*2+2,front);
-      await renderPage(nextSpread*2+1,back);
-      flipEl.style.left='50%';flipEl.style.transformOrigin='left center';
-      flipEl.style.display='block';flipEl.className='flip-container';
-      void flipEl.offsetWidth;flipEl.classList.add('do-flip-right');
-    }else{
-      await renderPage(bookSpread*2+1,front);
-      await renderPage(nextSpread*2+2,back);
-      flipEl.style.left='0';flipEl.style.transformOrigin='right center';
-      flipEl.style.display='block';flipEl.className='flip-container';
-      void flipEl.offsetWidth;flipEl.classList.add('do-flip-left');
-    }
-    setTimeout(async()=>{
-      flipEl.style.display='none';flipEl.className='flip-container';
-      bookSpread=nextSpread;await renderSpread();bookFlipping=false;
-    },660);
-  }
+    book.style.opacity='1';
+    setTimeout(()=>{book.style.transition='';bookFlipping=false;},260);
+  },260);
 }
 function bookNext(){doFlip('next');}
 function bookPrev(){doFlip('prev');}
