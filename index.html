@@ -6,7 +6,7 @@
 <title> Harvey </title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -455,7 +455,7 @@ function closeMapLb(){document.getElementById('mapLightbox').style.display='none
 document.getElementById('mapLightbox').addEventListener('click',e=>{if(e.target===document.getElementById('mapLightbox'))closeMapLb();});
 
 // ── BOOK VIEWER ────────────────────────────────────────────────────
-if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 let bookPdf=null,bookSpread=0,bookTotal=0,bookFlipping=false;
 
 async function openBook(item){
