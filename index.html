@@ -125,7 +125,7 @@ section{padding:6rem 2rem}
 .lb-nav-btn{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--text2);cursor:pointer;font-size:12px;font-family:var(--sans);font-weight:500;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}.lb-nav-btn:hover{border-color:rgba(14,165,233,0.4);background:rgba(14,165,233,0.08);color:var(--accent)}
 .lb-close-btn{position:fixed;top:1.5rem;right:1.5rem;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:10}.lb-close-btn:hover{background:rgba(255,255,255,0.12);color:var(--text)}
 
-/* BOOK VIEWER */
+/* ─── BOOK VIEWER ──────────────────────────────────────────────── */
 #bookViewer{position:fixed;inset:0;z-index:2000;background:rgba(3,6,10,0.98);backdrop-filter:blur(20px);display:none;flex-direction:column}
 .book-topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);flex-shrink:0;gap:1rem}
 .book-info-title{font-family:var(--serif);font-size:1.1rem;color:var(--text);line-height:1.2}
@@ -133,34 +133,91 @@ section{padding:6rem 2rem}
 .book-topbar-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .book-dl-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;background:var(--accent);color:#fff;font-size:13px;font-weight:500;font-family:var(--sans);border:none;cursor:pointer;text-decoration:none;transition:all 0.2s}.book-dl-btn:hover{background:var(--accent2);transform:translateY(-1px)}
 .book-close-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.2s}.book-close-btn:hover{background:rgba(255,255,255,0.14);color:var(--text)}
-.book-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;perspective:2000px;overflow:hidden;position:relative}
+
+/* Book stage — perspective drives the 3-D effect */
+.book-stage{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:2rem 1rem;
+  perspective:1400px;          /* ← tighter perspective = more dramatic flip */
+  overflow:hidden;position:relative;
+}
 .book-shadow{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);width:min(700px,88vw);height:36px;background:radial-gradient(ellipse,rgba(0,0,0,0.65) 0%,transparent 70%);pointer-events:none;border-radius:50%}
-.open-book{position:relative;width:min(760px,92vw);height:min(520px,66vh);display:flex;transform-style:preserve-3d}
-.book-spine{position:absolute;left:50%;top:0;bottom:0;width:4px;background:linear-gradient(to right,rgba(0,0,0,0.4),rgba(255,255,255,0.08),rgba(0,0,0,0.4));transform:translateX(-50%);z-index:20;box-shadow:0 0 16px rgba(0,0,0,0.6)}
-.book-page canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+
+/* The open book container — preserve-3d lets children flip in 3D */
+.open-book{
+  position:relative;
+  display:flex;
+  transform-style:preserve-3d;
+}
+
+/* ── PAGE HALVES (critical fix: position:relative + overflow:hidden) ── */
+.book-page{
+  position:relative;          /* ← FIXES the canvas/loading escape bug */
+  overflow:hidden;            /* ← clips canvas to the page boundary    */
+  background:#f4efe6;
+  flex-shrink:0;
+}
+.book-page canvas{
+  position:absolute;
+  inset:0;
+  width:100%!important;
+  height:100%!important;
+  display:block;
+}
 .book-page-left{border-radius:4px 0 0 4px;box-shadow:-10px 4px 40px rgba(0,0,0,0.6),inset -6px 0 16px rgba(0,0,0,0.12)}
 .book-page-right{border-radius:0 4px 4px 0;box-shadow:10px 4px 40px rgba(0,0,0,0.6),inset 6px 0 16px rgba(0,0,0,0.12)}
-  
+
+/* spine */
+.book-spine{position:absolute;left:50%;top:0;bottom:0;width:4px;background:linear-gradient(to right,rgba(0,0,0,0.4),rgba(255,255,255,0.08),rgba(0,0,0,0.4));transform:translateX(-50%);z-index:20;box-shadow:0 0 16px rgba(0,0,0,0.6)}
+
+/* loading overlay inside each page */
 .page-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f4efe6;flex-direction:column;gap:10px;z-index:2}
 .page-spinner{width:28px;height:28px;border:2px solid rgba(14,165,233,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .page-loading-text{font-size:11px;color:#999;font-family:var(--sans)}
 
-/* FLIP */
-.flip-container{position:absolute;top:0;height:100%;width:50%;transform-style:preserve-3d;z-index:30;pointer-events:none;display:none}
-.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;background:#f4efe6}
-.flip-back{transform:rotateY(180deg)}
-.flip-front canvas,.flip-back canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
-@keyframes flipFwdRight{from{transform:rotateY(0deg)}to{transform:rotateY(-180deg)}}
-@keyframes flipFwdLeft{from{transform:rotateY(0deg)}to{transform:rotateY(180deg)}}
-.do-flip-right{animation:flipFwdRight 0.65s cubic-bezier(0.4,0,0.2,1) forwards}
-.do-flip-left{animation:flipFwdLeft 0.65s cubic-bezier(0.4,0,0.2,1) forwards}
+/* ── FLIP ELEMENT ───────────────────────────────────────────────── */
+/*
+  The flip element is sized and positioned entirely via JS.
+  It sits over whichever page is turning.
+  Its transform-style:preserve-3d + backface-visibility on children
+  gives the realistic two-sided page look.
+*/
+.flip-container{
+  position:absolute;
+  top:0;
+  /* width / height / left set dynamically in JS */
+  transform-style:preserve-3d;
+  z-index:30;
+  pointer-events:none;
+  display:none;               /* shown only during animation */
+}
+.flip-front,.flip-back{
+  position:absolute;
+  inset:0;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  overflow:hidden;
+  background:#f4efe6;
+}
+/* back face starts rotated 180° so it's hidden at rest */
+.flip-back{transform:rotateY(180deg);}
+.flip-front canvas,.flip-back canvas{
+  position:absolute;
+  inset:0;
+  width:100%!important;
+  height:100%!important;
+}
 
-.book-controls{display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:1.2rem 1rem;border-top:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
-.book-ctrl-btn{display:flex;align-items:center;gap:8px;padding:9px 20px;border-radius:9px;border:1px solid var(--border2);background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;font-size:13px;font-family:var(--sans);font-weight:500;transition:all 0.2s}.book-ctrl-btn:hover:not(:disabled){border-color:rgba(14,165,233,0.45);background:rgba(14,165,233,0.08);color:var(--accent)}.book-ctrl-btn:disabled{opacity:0.3;cursor:not-allowed}
-.book-page-counter{font-family:var(--mono);font-size:13px;color:var(--text3);min-width:100px;text-align:center}
-.book-progress{width:160px;height:2px;background:rgba(255,255,255,0.08);border-radius:1px;overflow:hidden}
-.book-progress-fill{height:100%;background:var(--accent);border-radius:1px;transition:width 0.4s ease}
+/* shadow gradient that "rides" the flip seam */
+.flip-shadow{
+  position:absolute;
+  top:0;bottom:0;
+  pointer-events:none;
+  z-index:25;
+  opacity:0;
+  transition:opacity 0.65s ease;
+}
 
 /* CONTACT */
 #contact{background:var(--bg2);position:relative;overflow:hidden}
@@ -181,8 +238,15 @@ textarea.form-input{resize:vertical;min-height:110px}
 footer{background:var(--bg);border-top:1px solid var(--border);padding:2rem;text-align:center}
 .footer-text{font-size:12px;color:var(--text3)}.footer-text a{color:var(--accent);text-decoration:none}
 
-@media(max-width:900px){.contact-grid{grid-template-columns:1fr}.lb-inner{grid-template-columns:1fr}.lb-img{min-height:260px}.edu-item{grid-template-columns:100px 1fr}.edu-item::after{left:99px}.edu-dot{left:93px}.open-book{height:min(440px,60vh)}}
-@media(max-width:680px){nav{padding:1rem 1.25rem}.nav-links,.nav-cta{display:none}.hamburger{display:flex}section{padding:4rem 1.25rem}.hero-stats{gap:1.75rem}.form-row{grid-template-columns:1fr}.edu-item{grid-template-columns:1fr;gap:0.5rem}.edu-item::after,.edu-dot{display:none}.edu-year{text-align:left}.edu-body{padding-left:0}.open-book{height:min(360px,55vh)}.book-dl-btn span{display:none}.book-progress{display:none}}
+/* BOOK CONTROLS */
+.book-controls{display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:1.2rem 1rem;border-top:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.book-ctrl-btn{display:flex;align-items:center;gap:8px;padding:9px 20px;border-radius:9px;border:1px solid var(--border2);background:rgba(255,255,255,0.04);color:var(--text2);cursor:pointer;font-size:13px;font-family:var(--sans);font-weight:500;transition:all 0.2s}.book-ctrl-btn:hover:not(:disabled){border-color:rgba(14,165,233,0.45);background:rgba(14,165,233,0.08);color:var(--accent)}.book-ctrl-btn:disabled{opacity:0.3;cursor:not-allowed}
+.book-page-counter{font-family:var(--mono);font-size:13px;color:var(--text3);min-width:100px;text-align:center}
+.book-progress{width:160px;height:2px;background:rgba(255,255,255,0.08);border-radius:1px;overflow:hidden}
+.book-progress-fill{height:100%;background:var(--accent);border-radius:1px;transition:width 0.4s ease}
+
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr}.lb-inner{grid-template-columns:1fr}.lb-img{min-height:260px}.edu-item{grid-template-columns:100px 1fr}.edu-item::after{left:99px}.edu-dot{left:93px}}
+@media(max-width:680px){nav{padding:1rem 1.25rem}.nav-links,.nav-cta{display:none}.hamburger{display:flex}section{padding:4rem 1.25rem}.hero-stats{gap:1.75rem}.form-row{grid-template-columns:1fr}.edu-item{grid-template-columns:1fr;gap:0.5rem}.edu-item::after,.edu-dot{display:none}.edu-year{text-align:left}.edu-body{padding-left:0}.book-dl-btn span{display:none}.book-progress{display:none}}
 </style>
 </head>
 <body>
@@ -361,19 +425,25 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:2rem;text
   <div class="book-stage">
     <div class="book-shadow"></div>
     <div class="open-book" id="openBook">
+      <!-- Left page -->
       <div class="book-page book-page-left" id="pageLeft">
-        <div class="page-loading" id="loadLeft"><div class="page-spinner"></div><div class="page-loading-text">Loading...</div></div>
+        <div class="page-loading" id="loadLeft"><div class="page-spinner"></div><div class="page-loading-text">Loading…</div></div>
         <canvas id="canvasLeft"></canvas>
       </div>
+      <!-- Spine -->
       <div class="book-spine"></div>
+      <!-- Right page -->
       <div class="book-page book-page-right" id="pageRight">
-        <div class="page-loading" id="loadRight"><div class="page-spinner"></div><div class="page-loading-text">Loading...</div></div>
+        <div class="page-loading" id="loadRight"><div class="page-spinner"></div><div class="page-loading-text">Loading…</div></div>
         <canvas id="canvasRight"></canvas>
       </div>
-      <div class="flip-container" id="flipEl" style="display:none">
+      <!-- Flip element — sized & shown only during animation -->
+      <div class="flip-container" id="flipEl">
         <div class="flip-front"><canvas id="flipFront"></canvas></div>
         <div class="flip-back"><canvas id="flipBack"></canvas></div>
       </div>
+      <!-- Shadow cast by the turning page -->
+      <div class="flip-shadow" id="flipShadow"></div>
     </div>
   </div>
   <div class="book-controls">
@@ -392,13 +462,6 @@ const MAPS=[
   {id:1,title:"15 Minute Neighborhoods",loc:"City of Calgery, AB",cat:"Community Planning",catColor:"#f59e0b",desc:"Neighborhoods within City of Calgery having 15 minute walking distance to basic everyday services like greenspaces, supermarkets, education, public transit and food service establishments, demonstrating community spatial analysis",tools:"ArcGIS Pro · Network Analysis · Buffer Analysis · CKL Transit Data",img:"img/15min.png"},
   {id:2,title:"Flood Plain Mapping",loc:"Town of Goderich, ON",cat:"Hydrological Analysis",catColor:"#0ea5e9",desc:"Multi-layer flood risk analysis using 30-year precipitation data, slope classification, and waterbody features to identify six high-risk accumulation zones informing stormwater capital planning.",tools:"ArcGIS Pro · Raster Analysis · 30-Year Precipitation Data · Slope Modelling",img:"img/floodmapping.jpg"},
   {id:3,title:"Residential Site Suitability",loc:"Town of Goderich, ON",cat:"Multi-Criteria Analysis",catColor:"#8b5cf6",desc:"Weighted overlay analysis across six factors — zoning, slope, building footprints, land cover, road access, and watercourses — to identify optimal parcels for residential intensification.",tools:"ArcGIS Pro · Weighted Overlay · Raster Scoring · Ontario GeoHub",img:"img/ResidentialSiteSui.png"},
-  // {id:4,title:"Natural Heritage Features Map",loc:"Township of Scugog, ON",cat:"Environmental Assessment",catColor:"#10b981",desc:"Desktop Phase 1 NHE mapping wetlands, woodlands, and Blackstock Creek within 120m of the proposed development envelope on the Oak Ridges Moraine with 30m vegetation protection zones.",tools:"ArcGIS Pro · NHIC · SOLRIS 3.0 · Ontario GeoHub · GBIF",img:"maps/nhe_scugog.jpg"},
-  // {id:5,title:"Road Network Classification",loc:"Town of Lindsay, ON",cat:"Transportation Planning",catColor:"#f59e0b",desc:"Road hierarchy mapping from Lindsay Zoning By-law 2000-75 showing highway, arterial, collector, and local street classifications with LiDAR-derived elevation base layer.",tools:"ArcGIS Pro · LiDAR Elevation · CKL Road Data · Cartography",img:"maps/road_network.jpg"},
-  // {id:6,title:"Zoning By-law Map",loc:"Town of Lindsay, ON",cat:"Land Use Planning",catColor:"#f97316",desc:"Zoning layer from Lindsay Comprehensive Zoning By-law 2000-75 highlighting the subject RH1-S5(H1) zone and surrounding residential, commercial, and community facility designations.",tools:"ArcGIS Pro · Municipal Open Data · Cartography",img:"maps/zoning_lindsay.jpg"},
-  // {id:7,title:"Wetland & Woodland Classification",loc:"Township of Scugog, ON",cat:"Natural Heritage",catColor:"#14b8a6",desc:"SOLRIS 3.0 vegetation classification mapping thicket swamp, treed swamp, deciduous and coniferous woodland within the area of influence of the proposed golf course development.",tools:"ArcGIS Pro · SOLRIS 3.0 · NHIC Make-a-Map · Aerial Imagery",img:"maps/wetlands_scugog.jpg"},
-  // {id:8,title:"Official Plan Land Use Schedule",loc:"City of Kawartha Lakes, ON",cat:"Policy Mapping",catColor:"#6366f1",desc:"Schedule A-3 from the City of Kawartha Lakes Official Plan (March 2025) showing Urban Settlement Area designations with the subject site within the Lindsay Secondary Plan boundary.",tools:"ArcGIS Pro · CKL Official Plan Data · Cartography",img:"maps/op_ckl.jpg"},
-  // {id:9,title:"Bird Species Occurrence Mapping",loc:"Township of Scugog, ON",cat:"Ecological Assessment",catColor:"#14b8a6",desc:"Spatial mapping of 27 bird species recorded within the study parcel using NatureCounts, Ontario Breeding Bird Atlas, and GBIF occurrence data including SARO/COSEWIC species at risk flags.",tools:"ArcGIS Pro · NatureCounts · GBIF · NHIC · Ontario Bird Atlas",img:"maps/birds_scugog.jpg"},
-  // {id:10,title:"Lindsay Secondary Plan Designations",loc:"Town of Lindsay, ON",cat:"Land Use Planning",catColor:"#f97316",desc:"Lindsay Secondary Plan Schedule F-1 (March 2025) showing Institutions and Community Facilities designation on the subject site, with intensification corridors and surrounding mixed-use zones.",tools:"ArcGIS Pro · Lindsay Secondary Plan · Cartography",img:"maps/secondary_plan.jpg"},
 ];
 const PROJECTS=[
   {id:1,title:"Mid-Rise Residential Planning Rationale",loc:"Lindsay, City of Kawartha Lakes",cat:"Development Planning",catColor:"#8b5cf6",desc:"Full Planning Rationale for a proposed 260-unit, 6-storey purpose-built rental building. Covers PPS 2024, CKLOP 2012, Lindsay Secondary Plan, and Zoning By-law 2000-75 with full zoning amendment table and transit analysis.",tools:"ArcGIS Pro · PPS 2024 · CKLOP 2012 · ZBA 2000-75 · Policy Writing",img:"projects/planning_rationale_cover.jpg",pdf:"projects/PLANNING_RATIONALE_Midrise_Lindsay.pdf"},
@@ -454,12 +517,30 @@ function renderMapLb(){
 function closeMapLb(){document.getElementById('mapLightbox').style.display='none';document.body.style.overflow='';}
 document.getElementById('mapLightbox').addEventListener('click',e=>{if(e.target===document.getElementById('mapLightbox'))closeMapLb();});
 
-// ── BOOK VIEWER ────────────────────────────────────────────────────
-// ── BOOK VIEWER ────────────────────────────────────────────────────
-if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-let bookPdf=null,bookSpread=0,bookTotal=0,bookFlipping=false;
-let bookPageW=380,bookPageH=520;
-  function resizeBookToPage(vp){
+// ═══════════════════════════════════════════════════════════════════
+// BOOK VIEWER  — 3-D page-flip edition
+// ═══════════════════════════════════════════════════════════════════
+if(typeof pdfjsLib!=='undefined')
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+
+let bookPdf=null, bookSpread=0, bookTotal=0, bookFlipping=false;
+let bookPageW=380, bookPageH=520;
+
+// ── helpers ──────────────────────────────────────────────────────
+function isMobile(){return window.innerWidth<=680;}
+
+/** Fill a canvas with the blank-page colour (used for out-of-range pages). */
+function clearCanvas(canvas){
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=bookPageW*dpr;
+  canvas.height=bookPageH*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#f4efe6';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
+/** Resize the two page-half divs and the flip element to match the PDF aspect ratio. */
+function resizeBookToPage(vp){
   const mobile=isMobile();
   const maxH=window.innerHeight*0.82;
   const maxW=window.innerWidth*(mobile?0.92:0.88);
@@ -468,137 +549,299 @@ let bookPageW=380,bookPageH=520;
   const pageH=Math.min(maxH,pageHfromW);
   bookPageW=Math.round(pageH*aspect);
   bookPageH=Math.round(pageH);
+
+  // Inject dynamic sizes for the page halves
   let s=document.getElementById('bookDynStyle');
   if(!s){s=document.createElement('style');s.id='bookDynStyle';document.head.appendChild(s);}
-  s.textContent=`#openBook .book-page::before{padding-bottom:0!important;display:none!important}#openBook .book-page{height:${bookPageH}px!important;width:${bookPageW}px!important;flex:none!important}`;
-  document.getElementById('openBook').style.width=(mobile?bookPageW:bookPageW*2+22)+'px';
-  document.getElementById('openBook').style.height=bookPageH+'px';
+  s.textContent=`
+    #openBook .book-page{
+      width:${bookPageW}px!important;
+      height:${bookPageH}px!important;
+      flex:none!important;
+    }`;
+
+  const book=document.getElementById('openBook');
+  book.style.width=(mobile?bookPageW:bookPageW*2+4)+'px';
+  book.style.height=bookPageH+'px';
+
+  // Keep flip element sized to match one page (JS sets left/transformOrigin on demand)
+  const fl=document.getElementById('flipEl');
+  fl.style.width=bookPageW+'px';
+  fl.style.height=bookPageH+'px';
 }
+
+/** Render a single PDF page number onto a given canvas, centred on a paper-coloured background. */
+async function renderPage(num,canvas){
+  if(!bookPdf||num<1||num>bookTotal){clearCanvas(canvas);return;}
+  const page=await bookPdf.getPage(num);
+  const vp=page.getViewport({scale:1});
+  const dpr=window.devicePixelRatio||1;
+  const scale=Math.min(bookPageW/vp.width, bookPageH/vp.height)*dpr;
+  const svp=page.getViewport({scale});
+  canvas.width=bookPageW*dpr;
+  canvas.height=bookPageH*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#f4efe6';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  const offsetX=Math.round((canvas.width -svp.width )/2);
+  const offsetY=Math.round((canvas.height-svp.height)/2);
+  ctx.save();ctx.translate(offsetX,offsetY);
+  await page.render({canvasContext:ctx,viewport:svp}).promise;
+  ctx.restore();
+}
+
+function setLoading(l,r){
+  document.getElementById('loadLeft' ).style.display=l?'flex':'none';
+  document.getElementById('canvasLeft' ).style.display=l?'none':'block';
+  document.getElementById('loadRight').style.display=r?'flex':'none';
+  document.getElementById('canvasRight').style.display=r?'none':'block';
+}
+
+/** Render the static spread (no animation). */
+async function renderSpread(){
+  document.getElementById('flipEl').style.display='none';
+  const cL=document.getElementById('canvasLeft');
+  const cR=document.getElementById('canvasRight');
+  if(isMobile()){
+    document.getElementById('pageRight').style.display='none';
+    document.querySelector('.book-spine').style.display='none';
+    document.getElementById('openBook').style.width=bookPageW+'px';
+    const L=bookSpread*2+1;
+    setLoading(true,false);
+    document.getElementById('loadRight').style.display='none';
+    cR.style.display='none';
+    await renderPage(L,cL);
+    document.getElementById('loadLeft').style.display='none';
+    cL.style.display='block';
+  }else{
+    document.getElementById('pageRight').style.display='block';
+    document.querySelector('.book-spine').style.display='block';
+    document.getElementById('openBook').style.width=(bookPageW*2+4)+'px';
+    const L=bookSpread*2+1, R=bookSpread*2+2;
+    setLoading(true,true);
+    await renderPage(L,cL);
+    await renderPage(R,cR);
+    document.getElementById('loadLeft').style.display='none'; cL.style.display='block';
+    document.getElementById('loadRight').style.display='none'; cR.style.display='block';
+  }
+  updateBookUI();
+}
+
+function updateBookUI(){
+  const L=bookSpread*2+1;
+  const totalSpreads=Math.ceil(bookTotal/2);
+  document.getElementById('bookCounter').textContent=
+    isMobile()?`Page ${L} of ${bookTotal}`:`Pages ${L}–${Math.min(L+1,bookTotal)} of ${bookTotal}`;
+  document.getElementById('bookProg').style.width=
+    (bookTotal>1?((L-1)/(bookTotal-1))*100:100)+'%';
+  document.getElementById('bPrev').disabled=bookSpread===0;
+  document.getElementById('bNext').disabled=bookSpread>=totalSpreads-1;
+}
+
+// ── open / close ─────────────────────────────────────────────────
 async function openBook(item){
   document.getElementById('bookTitle').textContent=item.title;
   document.getElementById('bookLoc').textContent=item.loc;
   const base=window.location.origin+window.location.pathname.replace(/\/[^\/]*$/,'/');
   const pdfUrl=new URL(item.pdf,base).href;
   const dlBtn=document.getElementById('bookDlBtn');
-  dlBtn.href=pdfUrl;dlBtn.download=pdfUrl.split('/').pop();
+  dlBtn.href=pdfUrl; dlBtn.download=pdfUrl.split('/').pop();
   document.getElementById('bookViewer').style.display='flex';
   document.body.style.overflow='hidden';
-  bookSpread=0;bookPdf=null;
-  document.getElementById('loadLeft').innerHTML='<div class="page-spinner"></div><div class="page-loading-text">Loading...</div>';
-  document.getElementById('loadRight').innerHTML='<div class="page-spinner"></div><div class="page-loading-text">Loading...</div>';
+  bookSpread=0; bookPdf=null;
   setLoading(true,true);
   try{
     const resp=await fetch(pdfUrl);
-    if(!resp.ok)throw new Error('Not found');
-    const arrayBuffer=await resp.arrayBuffer();
-    bookPdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+    if(!resp.ok) throw new Error('Not found');
+    const buf=await resp.arrayBuffer();
+    bookPdf=await pdfjsLib.getDocument({data:buf}).promise;
     bookTotal=bookPdf.numPages;
     const p1=await bookPdf.getPage(1);
     resizeBookToPage(p1.getViewport({scale:1}));
     await renderSpread();
   }catch(e){
-    document.getElementById('loadLeft').innerHTML='<div style="text-align:center;padding:1.5rem;color:#999;font-size:13px;font-family:var(--sans)">PDF not found.<br/>Add your PDF to the projects/ folder<br/>with the filename shown in the data.</div>';
+    document.getElementById('loadLeft').innerHTML=
+      '<div style="text-align:center;padding:1.5rem;color:#999;font-size:13px;font-family:var(--sans)">PDF not found.<br/>Add your PDF to the projects/ folder.</div>';
     document.getElementById('loadLeft').style.display='flex';
     document.getElementById('loadRight').style.display='none';
   }
 }
 function closeBook(){document.getElementById('bookViewer').style.display='none';document.body.style.overflow='';bookPdf=null;}
-function setLoading(l,r){
-  document.getElementById('loadLeft').style.display=l?'flex':'none';document.getElementById('canvasLeft').style.display=l?'none':'block';
-  document.getElementById('loadRight').style.display=r?'flex':'none';document.getElementById('canvasRight').style.display=r?'none':'block';
-}
-async function renderPage(num,canvas){
-  if(!bookPdf||num<1||num>bookTotal)return;
-  const page=await bookPdf.getPage(num);
-  const w=bookPageW||380;const h=bookPageH||520;
-  const vp=page.getViewport({scale:1});
-  const dpr=window.devicePixelRatio||1;
-  const scale=Math.min(w/vp.width,h/vp.height)*dpr;
-  const svp=page.getViewport({scale});
-  canvas.width=w*dpr;canvas.height=h*dpr;
-  const ctx=canvas.getContext('2d');
-  ctx.fillStyle='#f4efe6';ctx.fillRect(0,0,canvas.width,canvas.height);
-  const offsetX=Math.round((canvas.width-svp.width)/2);
-  const offsetY=Math.round((canvas.height-svp.height)/2);
-  ctx.save();ctx.translate(offsetX,offsetY);
-  await page.render({canvasContext:ctx,viewport:svp}).promise;
-  ctx.restore();
-}
-function isMobile(){return window.innerWidth<=680;}
-async function renderSpread(){
-  document.getElementById('flipEl').style.display='none';
-  if(isMobile()){
-    document.getElementById('pageRight').style.display='none';
-    document.querySelectorAll('.book-spine').forEach(s=>s.style.display='none');
-    document.getElementById('openBook').style.width='min(380px,92vw)';
-    const L=bookSpread*2+1;
-    setLoading(true,false);
-    document.getElementById('loadRight').style.display='none';
-    document.getElementById('canvasRight').style.display='none';
-    await renderPage(L,document.getElementById('canvasLeft'));
-    document.getElementById('loadLeft').style.display='none';
-    document.getElementById('canvasLeft').style.display='block';
-    updateBookUI();
-  }else{
-    document.getElementById('pageRight').style.display='block';
-    document.querySelectorAll('.book-spine').forEach(s=>s.style.display='block');
-    const L=bookSpread*2+1,R=bookSpread*2+2;
-    setLoading(true,true);
-    await renderPage(L,document.getElementById('canvasLeft'));
-    await renderPage(R,document.getElementById('canvasRight'));
-    document.getElementById('loadLeft').style.display='none';document.getElementById('canvasLeft').style.display='block';
-    if(R<=bookTotal){document.getElementById('loadRight').style.display='none';document.getElementById('canvasRight').style.display='block';}
-    else{document.getElementById('loadRight').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ccc;font-family:var(--sans);font-size:13px">End of document</div>';document.getElementById('loadRight').style.display='flex';document.getElementById('canvasRight').style.display='none';}
-    updateBookUI();
-  }
-}
-function updateBookUI(){
-  const totalSpreads=Math.ceil(bookTotal/2);const L=bookSpread*2+1;
-  document.getElementById('bookCounter').textContent=`Pages ${L}–${Math.min(L+1,bookTotal)} of ${bookTotal}`;
-  document.getElementById('bookProg').style.width=(bookTotal>1?((L-1)/(bookTotal-1))*100:100)+'%';
-  document.getElementById('bPrev').disabled=bookSpread===0;
-  document.getElementById('bNext').disabled=bookSpread>=totalSpreads-1;
-}
+
+// ── 3-D page-flip ────────────────────────────────────────────────
+/*
+  HOW THE FLIP WORKS
+  ──────────────────
+  Forward (next): the RIGHT page lifts and swings toward the LEFT.
+    • flip element covers the right half, pivots around its LEFT edge (the spine).
+    • flip-front  = current right page content  (visible at start).
+    • flip-back   = next spread's left page     (revealed at end, thanks to backface-visibility).
+    • Static canvasRight is pre-loaded with next spread's RIGHT page so it shows
+      behind the flip element as the page peels away.
+    • After animation: hide flip, update canvasLeft to the new left page.
+
+  Backward (prev): the LEFT page lifts and swings toward the RIGHT.
+    • flip element covers the left half, pivots around its RIGHT edge (the spine).
+    • flip-front  = current left page content.
+    • flip-back   = prev spread's right page.
+    • Static canvasLeft pre-loaded with prev spread's LEFT page.
+    • After animation: hide flip, update canvasRight.
+*/
 async function doFlip(dir){
   if(bookFlipping||!bookPdf)return;
   const totalSpreads=Math.ceil(bookTotal/2);
   if(dir==='next'&&bookSpread>=totalSpreads-1)return;
   if(dir==='prev'&&bookSpread===0)return;
   bookFlipping=true;
-  const book=document.getElementById('openBook');
-  book.style.transition='opacity 0.25s ease';
-  book.style.opacity='0';
-  await new Promise(r=>setTimeout(r,260));
-  bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
-  await renderSpread();
-  book.style.opacity='1';
-  await new Promise(r=>setTimeout(r,260));
-  book.style.transition='';
-  bookFlipping=false;
+
+  // Mobile — simple cross-fade, no 3-D
+  if(isMobile()){
+    const book=document.getElementById('openBook');
+    book.style.transition='opacity 0.25s ease';
+    book.style.opacity='0';
+    await new Promise(r=>setTimeout(r,260));
+    bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
+    await renderSpread();
+    book.style.opacity='1';
+    setTimeout(()=>{book.style.transition='';bookFlipping=false;},260);
+    return;
+  }
+
+  const nextSpread=dir==='next'?bookSpread+1:bookSpread-1;
+  const curL=bookSpread*2+1,  curR=bookSpread*2+2;
+  const nextL=nextSpread*2+1, nextR=nextSpread*2+2;
+
+  const flipEl  =document.getElementById('flipEl');
+  const flipFront=document.getElementById('flipFront');
+  const flipBack =document.getElementById('flipBack');
+  const cL=document.getElementById('canvasLeft');
+  const cR=document.getElementById('canvasRight');
+  const shadow=document.getElementById('flipShadow');
+
+  // Reset flip element
+  flipEl.style.transition='none';
+  flipEl.style.transform='rotateY(0deg)';
+  flipEl.style.width=bookPageW+'px';
+  flipEl.style.height=bookPageH+'px';
+  flipEl.style.top='0';
+
+  if(dir==='next'){
+    // 1. Render both faces of the flipping page
+    await renderPage(curR, flipFront);
+    await renderPage(nextL, flipBack);
+
+    // 2. Pre-render the page that will appear behind the flip (on the right)
+    await renderPage(nextR, cR);
+    document.getElementById('loadRight').style.display='none';
+    cR.style.display='block';
+
+    // 3. Shadow falls on the LEFT page as the right page lifts
+    shadow.style.cssText=`
+      position:absolute;top:0;bottom:0;left:0;width:${bookPageW}px;
+      background:linear-gradient(to left,rgba(0,0,0,0.18) 0%,transparent 75%);
+      pointer-events:none;z-index:25;opacity:0;
+      transition:opacity 0.65s ease;`;
+
+    // 4. Position flip over the RIGHT page (left edge = spine)
+    flipEl.style.left=(bookPageW+4)+'px';
+    flipEl.style.transformOrigin='left center';
+    flipEl.style.display='block';
+
+    // 5. Force reflow then start animation
+    void flipEl.offsetWidth;
+    shadow.style.opacity='1';
+    flipEl.style.transition='transform 0.65s cubic-bezier(0.4,0,0.2,1)';
+    flipEl.style.transform='rotateY(-180deg)';
+
+    // 6. After animation: commit the new spread
+    setTimeout(async()=>{
+      flipEl.style.display='none';
+      flipEl.style.transition='';
+      shadow.style.opacity='0';
+      bookSpread=nextSpread;
+      await renderPage(nextL,cL);
+      document.getElementById('loadLeft').style.display='none';
+      cL.style.display='block';
+      updateBookUI();
+      bookFlipping=false;
+    },680);
+
+  }else{
+    // PREV flip ─────────────────────────────────────────────────
+    // 1. Render faces
+    await renderPage(curL, flipFront);
+    await renderPage(nextR, flipBack);
+
+    // 2. Pre-render behind (left page)
+    await renderPage(nextL, cL);
+    document.getElementById('loadLeft').style.display='none';
+    cL.style.display='block';
+
+    // 3. Shadow on right page
+    shadow.style.cssText=`
+      position:absolute;top:0;bottom:0;left:${bookPageW+4}px;width:${bookPageW}px;
+      background:linear-gradient(to right,rgba(0,0,0,0.18) 0%,transparent 75%);
+      pointer-events:none;z-index:25;opacity:0;
+      transition:opacity 0.65s ease;`;
+
+    // 4. Position flip over LEFT page (right edge = spine)
+    flipEl.style.left='0';
+    flipEl.style.transformOrigin='right center';
+    flipEl.style.display='block';
+
+    void flipEl.offsetWidth;
+    shadow.style.opacity='1';
+    flipEl.style.transition='transform 0.65s cubic-bezier(0.4,0,0.2,1)';
+    flipEl.style.transform='rotateY(180deg)';
+
+    setTimeout(async()=>{
+      flipEl.style.display='none';
+      flipEl.style.transition='';
+      shadow.style.opacity='0';
+      bookSpread=nextSpread;
+      await renderPage(nextR,cR);
+      document.getElementById('loadRight').style.display='none';
+      cR.style.display='block';
+      updateBookUI();
+      bookFlipping=false;
+    },680);
+  }
 }
+
 function bookNext(){doFlip('next');}
 function bookPrev(){doFlip('prev');}
 
-// ── NAV, MOBILE, KEYBOARD, FORM ───────────────────────────────────
+// ── NAV / MOBILE / KEYBOARD / FORM ───────────────────────────────
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60));
 document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
 function closeMobile(){document.getElementById('mobileMenu').classList.remove('open');}
+
 document.addEventListener('keydown',e=>{
   const bv=document.getElementById('bookViewer').style.display!=='none';
   const ml=document.getElementById('mapLightbox').style.display!=='none';
-  if(bv){if(e.key==='Escape')closeBook();if(e.key==='ArrowRight')bookNext();if(e.key==='ArrowLeft')bookPrev();}
-  else if(ml){if(e.key==='Escape')closeMapLb();if(e.key==='ArrowRight'){lbIndex=(lbIndex+1)%lbData.length;renderMapLb();}if(e.key==='ArrowLeft'){lbIndex=((lbIndex-1)+lbData.length)%lbData.length;renderMapLb();}}
+  if(bv){
+    if(e.key==='Escape')closeBook();
+    if(e.key==='ArrowRight')bookNext();
+    if(e.key==='ArrowLeft')bookPrev();
+  }else if(ml){
+    if(e.key==='Escape')closeMapLb();
+    if(e.key==='ArrowRight'){lbIndex=(lbIndex+1)%lbData.length;renderMapLb();}
+    if(e.key==='ArrowLeft'){lbIndex=((lbIndex-1)+lbData.length)%lbData.length;renderMapLb();}
+  }
 });
+
 function submitForm(){
-  const n=document.getElementById('cfName').value.trim(),e=document.getElementById('cfEmail').value.trim(),m=document.getElementById('cfMsg').value.trim();
+  const n=document.getElementById('cfName').value.trim(),
+        e=document.getElementById('cfEmail').value.trim(),
+        m=document.getElementById('cfMsg').value.trim();
   if(!n||!e||!m){alert('Please fill in all required fields.');return;}
   window.location.href=`mailto:Harveybhatti2809@gmail.com?subject=${encodeURIComponent(document.getElementById('cfSubject').value||'Portfolio Inquiry')}&body=${encodeURIComponent('Name: '+n+'\nEmail: '+e+'\n\n'+m)}`;
-  document.getElementById('formSuccess').style.display='block';setTimeout(()=>{document.getElementById('formSuccess').style.display='none';},4000);
+  document.getElementById('formSuccess').style.display='block';
+  setTimeout(()=>{document.getElementById('formSuccess').style.display='none';},4000);
 }
-makeCarousel(MAPS,'mapTrack','mapMeta','mapPrev','mapNext','mapDots','c-card',false);
-makeCarousel(PROJECTS,'projTrack','projMeta','projPrev','projNext','projDots','p-card',true);
 
-
+makeCarousel(MAPS,    'mapTrack', 'mapMeta', 'mapPrev', 'mapNext', 'mapDots', 'c-card', false);
+makeCarousel(PROJECTS,'projTrack','projMeta','projPrev','projNext','projDots','p-card', true);
 
 // ── SWIPE SUPPORT ─────────────────────────────────────────────────
 function addSwipe(el,onLeft,onRight,threshold=50){
@@ -606,44 +849,22 @@ function addSwipe(el,onLeft,onRight,threshold=50){
   el.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
   el.addEventListener('touchend',e=>{
     if(sx===null)return;
-    const dx=e.changedTouches[0].clientX-sx;
-    const dy=e.changedTouches[0].clientY-sy;
-    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>threshold){
-      if(dx<0)onLeft();else onRight();
-    }
+    const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>threshold){if(dx<0)onLeft();else onRight();}
     sx=null;sy=null;
   },{passive:true});
 }
-
-// Swipe on map carousel track
-addSwipe(
-  document.getElementById('mapTrack'),
+addSwipe(document.getElementById('mapTrack'),
   ()=>document.getElementById('mapNext').click(),
-  ()=>document.getElementById('mapPrev').click()
-);
-
-// Swipe on project carousel track
-addSwipe(
-  document.getElementById('projTrack'),
+  ()=>document.getElementById('mapPrev').click());
+addSwipe(document.getElementById('projTrack'),
   ()=>document.getElementById('projNext').click(),
-  ()=>document.getElementById('projPrev').click()
-);
-
-// Swipe on book viewer (stage area)
-addSwipe(
-  document.getElementById('bookViewer'),
-  ()=>bookNext(),
-  ()=>bookPrev()
-);
-
-// Swipe on map lightbox
-addSwipe(
-  document.getElementById('mapLightbox'),
+  ()=>document.getElementById('projPrev').click());
+addSwipe(document.getElementById('bookViewer'),()=>bookNext(),()=>bookPrev());
+addSwipe(document.getElementById('mapLightbox'),
   ()=>{lbIndex=(lbIndex+1)%lbData.length;renderMapLb();},
-  ()=>{lbIndex=((lbIndex-1)+lbData.length)%lbData.length;renderMapLb();}
-);
+  ()=>{lbIndex=((lbIndex-1)+lbData.length)%lbData.length;renderMapLb();});
 
-// Recheck on resize (e.g. rotating device)
 window.addEventListener('resize',()=>{if(bookPdf)renderSpread();});
 </script>
 </body>
