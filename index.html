@@ -137,7 +137,7 @@ section{padding:6rem 2rem}
 .book-shadow{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);width:min(700px,88vw);height:36px;background:radial-gradient(ellipse,rgba(0,0,0,0.65) 0%,transparent 70%);pointer-events:none;border-radius:50%}
 .open-book{position:relative;width:min(760px,92vw);height:min(520px,66vh);display:flex;transform-style:preserve-3d}
 .book-spine{position:absolute;left:50%;top:0;bottom:0;width:4px;background:linear-gradient(to right,rgba(0,0,0,0.4),rgba(255,255,255,0.08),rgba(0,0,0,0.4));transform:translateX(-50%);z-index:20;box-shadow:0 0 16px rgba(0,0,0,0.6)}
-.book-page{width:50%;height:100%;position:relative;overflow:hidden;background:#f4efe6}
+.book-page canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
 .book-page-left{border-radius:4px 0 0 4px;box-shadow:-10px 4px 40px rgba(0,0,0,0.6),inset -6px 0 16px rgba(0,0,0,0.12)}
 .book-page-right{border-radius:0 4px 4px 0;box-shadow:10px 4px 40px rgba(0,0,0,0.6),inset 6px 0 16px rgba(0,0,0,0.12)}
 .book-page canvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:100%;max-height:100%;}
