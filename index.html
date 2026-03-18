@@ -461,12 +461,21 @@ let bookPdf=null,bookSpread=0,bookTotal=0,bookFlipping=false;
 async function openBook(item){
   document.getElementById('bookTitle').textContent=item.title;
   document.getElementById('bookLoc').textContent=item.loc;
-  const dlBtn=document.getElementById('bookDlBtn');dlBtn.href=item.pdf;dlBtn.download=item.pdf.split('/').pop();
-  document.getElementById('bookViewer').style.display='flex';document.body.style.overflow='hidden';
-  bookSpread=0;bookPdf=null;
-  setLoading(true,true);
-  try{
-    bookPdf=await pdfjsLib.getDocument(item.pdf).promise;
+  const base = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+const pdfUrl = new URL(item.pdf, base).href;
+
+const dlBtn = document.getElementById('bookDlBtn');
+dlBtn.href = pdfUrl;
+dlBtn.download = pdfUrl.split('/').pop();
+
+document.getElementById('bookViewer').style.display='flex';
+document.body.style.overflow='hidden';
+bookSpread=0;
+bookPdf=null;
+setLoading(true,true);
+
+try{
+  bookPdf = await pdfjsLib.getDocument(pdfUrl).promise;
     bookTotal=bookPdf.numPages;
     await renderSpread();
   }catch(e){
