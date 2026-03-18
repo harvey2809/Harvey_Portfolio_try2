@@ -567,12 +567,13 @@ async function doFlip(dir){
   const book=document.getElementById('openBook');
   book.style.transition='opacity 0.25s ease';
   book.style.opacity='0';
-  setTimeout(async()=>{
-    bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
-    await renderSpread();
-    book.style.opacity='1';
-    setTimeout(()=>{book.style.transition='';bookFlipping=false;},260);
-  },260);
+  await new Promise(r=>setTimeout(r,260));
+  bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
+  await renderSpread();
+  book.style.opacity='1';
+  await new Promise(r=>setTimeout(r,260));
+  book.style.transition='';
+  bookFlipping=false;
 }
 function bookNext(){doFlip('next');}
 function bookPrev(){doFlip('prev');}
