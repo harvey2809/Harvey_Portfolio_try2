@@ -458,19 +458,20 @@ document.getElementById('mapLightbox').addEventListener('click',e=>{if(e.target=
 // ── BOOK VIEWER ────────────────────────────────────────────────────
 if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 let bookPdf=null,bookSpread=0,bookTotal=0,bookFlipping=false;
+let bookPageW=380,bookPageH=520;
   function resizeBookToPage(vp){
   const mobile=isMobile();
-  const maxH=window.innerHeight*0.80;
+  const maxH=window.innerHeight*0.82;
   const maxW=window.innerWidth*(mobile?0.92:0.88);
   const aspect=vp.width/vp.height;
-  const numPages=mobile?1:2;
-  const pageHfromW=(maxW-(mobile?0:22))/(numPages*aspect);
+  const pageHfromW=(maxW-(mobile?0:22))/((mobile?1:2)*aspect);
   const pageH=Math.min(maxH,pageHfromW);
-  const pageW=Math.round(pageH*aspect);
+  bookPageW=Math.round(pageH*aspect);
+  bookPageH=Math.round(pageH);
   let s=document.getElementById('bookDynStyle');
   if(!s){s=document.createElement('style');s.id='bookDynStyle';document.head.appendChild(s);}
-  s.textContent=`#openBook .book-page::before{padding-bottom:0!important;display:none!important}#openBook .book-page{height:${Math.round(pageH)}px!important;width:${pageW}px!important;flex:none!important}`;
-  document.getElementById('openBook').style.width=(mobile?pageW:pageW*2+22)+'px';
+  s.textContent=`#openBook .book-page::before{padding-bottom:0!important;display:none!important}#openBook .book-page{height:${bookPageH}px!important;width:${bookPageW}px!important;flex:none!important}`;
+  document.getElementById('openBook').style.width=(mobile?bookPageW:bookPageW*2+22)+'px';
 }
 async function openBook(item){
   document.getElementById('bookTitle').textContent=item.title;
@@ -508,8 +509,7 @@ function setLoading(l,r){
 async function renderPage(num,canvas){
   if(!bookPdf||num<1||num>bookTotal)return;
   const page=await bookPdf.getPage(num);
-  const cont=canvas.parentElement;
-  const w=cont.clientWidth||380;const h=cont.clientHeight||520;
+  const w=bookPageW||380;const h=bookPageH||520;
   const vp=page.getViewport({scale:1});
   const dpr=window.devicePixelRatio||1;
   const scale=Math.min(w/vp.width,h/vp.height)*dpr;
