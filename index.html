@@ -472,6 +472,7 @@ let bookPageW=380,bookPageH=520;
   if(!s){s=document.createElement('style');s.id='bookDynStyle';document.head.appendChild(s);}
   s.textContent=`#openBook .book-page::before{padding-bottom:0!important;display:none!important}#openBook .book-page{height:${bookPageH}px!important;width:${bookPageW}px!important;flex:none!important}`;
   document.getElementById('openBook').style.width=(mobile?bookPageW:bookPageW*2+22)+'px';
+  document.getElementById('openBook').style.height=bookPageH+'px';
 }
 async function openBook(item){
   document.getElementById('bookTitle').textContent=item.title;
@@ -541,7 +542,6 @@ async function renderSpread(){
   }else{
     document.getElementById('pageRight').style.display='block';
     document.querySelectorAll('.book-spine').forEach(s=>s.style.display='block');
-    document.getElementById('openBook').style.width='';
     const L=bookSpread*2+1,R=bookSpread*2+2;
     setLoading(true,true);
     await Promise.all([renderPage(L,document.getElementById('canvasLeft')),renderPage(R,document.getElementById('canvasRight'))]);
