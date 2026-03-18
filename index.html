@@ -576,6 +576,15 @@ async function doFlip(dir){
     },660);
   }
 }
+  function updateBookUI(){
+  const totalSpreads=Math.ceil(bookTotal/2);const L=bookSpread*2+1;
+  document.getElementById('bookCounter').textContent=`Pages ${L}–${Math.min(L+1,bookTotal)} of ${bookTotal}`;
+  document.getElementById('bookProg').style.width=(bookTotal>1?((L-1)/(bookTotal-1))*100:100)+'%';
+  document.getElementById('bPrev').disabled=bookSpread===0;
+  document.getElementById('bNext').disabled=bookSpread>=totalSpreads-1;
+}
+function bookNext(){doFlip('next');}
+function bookPrev(){doFlip('prev');}
 
 // ── NAV, MOBILE, KEYBOARD, FORM ───────────────────────────────────
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60));
