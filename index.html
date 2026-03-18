@@ -140,7 +140,7 @@ section{padding:6rem 2rem}
 .book-page{width:50%;height:100%;position:relative;overflow:hidden;background:#f4efe6}
 .book-page-left{border-radius:4px 0 0 4px;box-shadow:-10px 4px 40px rgba(0,0,0,0.6),inset -6px 0 16px rgba(0,0,0,0.12)}
 .book-page-right{border-radius:0 4px 4px 0;box-shadow:10px 4px 40px rgba(0,0,0,0.6),inset 6px 0 16px rgba(0,0,0,0.12)}
-.book-page canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+.book-page canvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:100%;max-height:100%;}
 .page-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f4efe6;flex-direction:column;gap:10px;z-index:2}
 .page-spinner{width:28px;height:28px;border:2px solid rgba(14,165,233,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -498,13 +498,19 @@ function setLoading(l,r){
 async function renderPage(num,canvas){
   if(!bookPdf||num<1||num>bookTotal)return;
   const page=await bookPdf.getPage(num);
-  const cont=canvas.parentElement;const w=cont.clientWidth||380;const h=cont.clientHeight||520;
-  const vp=page.getViewport({scale:1});const scale=Math.min(w/vp.width,h/vp.height)*window.devicePixelRatio;
-  const svp=page.getViewport({scale});
-  canvas.width=svp.width;canvas.height=svp.height;
+  const cont=canvas.parentElement;
+  const w=cont.clientWidth||380;
+  const h=cont.clientHeight||520;
+  const vp=page.getViewport({scale:1});
+  const scale=Math.min(w/vp.width,h/vp.height);
+  const dpr=window.devicePixelRatio||1;
+  const svp=page.getViewport({scale:scale*dpr});
+  canvas.width=svp.width;
+  canvas.height=svp.height;
+  canvas.style.width=Math.round(vp.width*scale)+'px';
+  canvas.style.height=Math.round(vp.height*scale)+'px';
   await page.render({canvasContext:canvas.getContext('2d'),viewport:svp}).promise;
 }
-function isMobile(){return window.innerWidth<=680;}
 
 async function renderSpread(){
   if(isMobile()){
