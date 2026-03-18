@@ -455,33 +455,27 @@ function closeMapLb(){document.getElementById('mapLightbox').style.display='none
 document.getElementById('mapLightbox').addEventListener('click',e=>{if(e.target===document.getElementById('mapLightbox'))closeMapLb();});
 
 // ── BOOK VIEWER ────────────────────────────────────────────────────
+// ── BOOK VIEWER ────────────────────────────────────────────────────
 if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 let bookPdf=null,bookSpread=0,bookTotal=0,bookFlipping=false;
-
 async function openBook(item){
   document.getElementById('bookTitle').textContent=item.title;
   document.getElementById('bookLoc').textContent=item.loc;
-  const base = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
-const pdfUrl = new URL(item.pdf, base).href;
-
-const dlBtn = document.getElementById('bookDlBtn');
-dlBtn.href = pdfUrl;
-dlBtn.download = pdfUrl.split('/').pop();
-
-document.getElementById('bookViewer').style.display='flex';
-document.body.style.overflow='hidden';
-bookSpread=0;
-bookPdf=null;
-document.getElementById('loadLeft').innerHTML='<div class="page-spinner"></div><div class="page-loading-text">Loading...</div>';
-document.getElementById('loadRight').innerHTML='<div class="page-spinner"></div><div class="page-loading-text">Loading...</div>';
-setLoading(true,true);
-setLoading(true,true);
-
-try{
- const resp = await fetch(pdfUrl);
-if(!resp.ok) throw new Error('Not found');
-const arrayBuffer = await resp.arrayBuffer();
-bookPdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+  const base=window.location.origin+window.location.pathname.replace(/\/[^\/]*$/,'/');
+  const pdfUrl=new URL(item.pdf,base).href;
+  const dlBtn=document.getElementById('bookDlBtn');
+  dlBtn.href=pdfUrl;dlBtn.download=pdfUrl.split('/').pop();
+  document.getElementById('bookViewer').style.display='flex';
+  document.body.style.overflow='hidden';
+  bookSpread=0;bookPdf=null;
+  document.getElementById('loadLeft').innerHTML='<div class="page-spinner"></div><div class="page-loading-text">Loading...</div>';
+  document.getElementById('loadRight').innerHTML='<div class="page-spinner"></div><div class="page-loading-text">Loading...</div>';
+  setLoading(true,true);
+  try{
+    const resp=await fetch(pdfUrl);
+    if(!resp.ok)throw new Error('Not found');
+    const arrayBuffer=await resp.arrayBuffer();
+    bookPdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
     bookTotal=bookPdf.numPages;
     await renderSpread();
   }catch(e){
@@ -499,19 +493,21 @@ async function renderPage(num,canvas){
   if(!bookPdf||num<1||num>bookTotal)return;
   const page=await bookPdf.getPage(num);
   const cont=canvas.parentElement;
-  const w=cont.clientWidth||380;
-  const h=cont.clientHeight||520;
+  const w=cont.clientWidth||380;const h=cont.clientHeight||520;
   const vp=page.getViewport({scale:1});
-  const scale=Math.min(w/vp.width,h/vp.height);
   const dpr=window.devicePixelRatio||1;
-  const svp=page.getViewport({scale:scale*dpr});
-  canvas.width=svp.width;
-  canvas.height=svp.height;
-  canvas.style.width=Math.round(vp.width*scale)+'px';
-  canvas.style.height=Math.round(vp.height*scale)+'px';
-  await page.render({canvasContext:canvas.getContext('2d'),viewport:svp}).promise;
+  const scale=Math.min(w/vp.width,h/vp.height)*dpr;
+  const svp=page.getViewport({scale});
+  canvas.width=w*dpr;canvas.height=h*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#f4efe6';ctx.fillRect(0,0,canvas.width,canvas.height);
+  const offsetX=Math.round((canvas.width-svp.width)/2);
+  const offsetY=Math.round((canvas.height-svp.height)/2);
+  ctx.save();ctx.translate(offsetX,offsetY);
+  await page.render({canvasContext:ctx,viewport:svp}).promise;
+  ctx.restore();
 }
-
+function isMobile(){return window.innerWidth<=680;}
 async function renderSpread(){
   if(isMobile()){
     document.getElementById('pageRight').style.display='none';
@@ -525,7 +521,7 @@ async function renderSpread(){
     document.getElementById('loadLeft').style.display='none';
     document.getElementById('canvasLeft').style.display='block';
     updateBookUI();
-  } else {
+  }else{
     document.getElementById('pageRight').style.display='block';
     document.querySelectorAll('.book-spine').forEach(s=>s.style.display='block');
     document.getElementById('openBook').style.width='';
@@ -538,7 +534,13 @@ async function renderSpread(){
     updateBookUI();
   }
 }
-
+function updateBookUI(){
+  const totalSpreads=Math.ceil(bookTotal/2);const L=bookSpread*2+1;
+  document.getElementById('bookCounter').textContent=`Pages ${L}–${Math.min(L+1,bookTotal)} of ${bookTotal}`;
+  document.getElementById('bookProg').style.width=(bookTotal>1?((L-1)/(bookTotal-1))*100:100)+'%';
+  document.getElementById('bPrev').disabled=bookSpread===0;
+  document.getElementById('bNext').disabled=bookSpread>=totalSpreads-1;
+}
 async function doFlip(dir){
   if(isMobile()){
     if(bookFlipping||!bookPdf)return;
@@ -547,13 +549,12 @@ async function doFlip(dir){
     if(dir==='prev'&&bookSpread===0)return;
     bookFlipping=true;
     const canv=document.getElementById('canvasLeft');
-    canv.style.transition='opacity 0.25s ease';
-    canv.style.opacity='0';
+    canv.style.transition='opacity 0.25s ease';canv.style.opacity='0';
     bookSpread=dir==='next'?bookSpread+1:bookSpread-1;
     await renderSpread();
     canv.style.opacity='1';
     setTimeout(()=>{canv.style.transition='';bookFlipping=false;},260);
-  } else {
+  }else{
     if(bookFlipping||!bookPdf)return;
     const totalSpreads=Math.ceil(bookTotal/2);
     if(dir==='next'&&bookSpread>=totalSpreads-1)return;
@@ -569,7 +570,7 @@ async function doFlip(dir){
       flipEl.style.left='50%';flipEl.style.transformOrigin='left center';
       flipEl.style.display='block';flipEl.className='flip-container';
       void flipEl.offsetWidth;flipEl.classList.add('do-flip-right');
-    } else {
+    }else{
       await renderPage(bookSpread*2+1,front);
       await renderPage(nextSpread*2+2,back);
       flipEl.style.left='0';flipEl.style.transformOrigin='right center';
@@ -581,13 +582,6 @@ async function doFlip(dir){
       bookSpread=nextSpread;await renderSpread();bookFlipping=false;
     },660);
   }
-}
-  function updateBookUI(){
-  const totalSpreads=Math.ceil(bookTotal/2);const L=bookSpread*2+1;
-  document.getElementById('bookCounter').textContent=`Pages ${L}–${Math.min(L+1,bookTotal)} of ${bookTotal}`;
-  document.getElementById('bookProg').style.width=(bookTotal>1?((L-1)/(bookTotal-1))*100:100)+'%';
-  document.getElementById('bPrev').disabled=bookSpread===0;
-  document.getElementById('bNext').disabled=bookSpread>=totalSpreads-1;
 }
 function bookNext(){doFlip('next');}
 function bookPrev(){doFlip('prev');}
