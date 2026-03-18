@@ -458,6 +458,20 @@ document.getElementById('mapLightbox').addEventListener('click',e=>{if(e.target=
 // ── BOOK VIEWER ────────────────────────────────────────────────────
 if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 let bookPdf=null,bookSpread=0,bookTotal=0,bookFlipping=false;
+  function resizeBookToPage(vp){
+  const mobile=isMobile();
+  const maxH=window.innerHeight*0.80;
+  const maxW=window.innerWidth*(mobile?0.92:0.88);
+  const aspect=vp.width/vp.height;
+  const numPages=mobile?1:2;
+  const pageHfromW=(maxW-(mobile?0:22))/(numPages*aspect);
+  const pageH=Math.min(maxH,pageHfromW);
+  const pageW=Math.round(pageH*aspect);
+  let s=document.getElementById('bookDynStyle');
+  if(!s){s=document.createElement('style');s.id='bookDynStyle';document.head.appendChild(s);}
+  s.textContent=`#openBook .book-page::before{padding-bottom:0!important;display:none!important}#openBook .book-page{height:${Math.round(pageH)}px!important;width:${pageW}px!important;flex:none!important}`;
+  document.getElementById('openBook').style.width=(mobile?pageW:pageW*2+22)+'px';
+}
 async function openBook(item){
   document.getElementById('bookTitle').textContent=item.title;
   document.getElementById('bookLoc').textContent=item.loc;
@@ -477,6 +491,8 @@ async function openBook(item){
     const arrayBuffer=await resp.arrayBuffer();
     bookPdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
     bookTotal=bookPdf.numPages;
+    const p1=await bookPdf.getPage(1);
+    resizeBookToPage(p1.getViewport({scale:1}));
     await renderSpread();
   }catch(e){
     document.getElementById('loadLeft').innerHTML='<div style="text-align:center;padding:1.5rem;color:#999;font-size:13px;font-family:var(--sans)">PDF not found.<br/>Add your PDF to the projects/ folder<br/>with the filename shown in the data.</div>';
@@ -509,6 +525,7 @@ async function renderPage(num,canvas){
 }
 function isMobile(){return window.innerWidth<=680;}
 async function renderSpread(){
+  document.getElementById('flipEl').style.display='none';
   if(isMobile()){
     document.getElementById('pageRight').style.display='none';
     document.querySelectorAll('.book-spine').forEach(s=>s.style.display='none');
